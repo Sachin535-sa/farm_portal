@@ -4,13 +4,23 @@ $host = 'localhost';
 $user = 'root';
 $pass = '';
 $db   = 'farm_portal';
+$port = null;
 
-// Try port 3307 first
-$conn = @mysqli_connect($host, $user, $pass, $db, 3307);
+// Load production/custom database configuration if present
+if (file_exists(__DIR__ . '/db_config.php')) {
+    include __DIR__ . '/db_config.php';
+}
 
-if (!$conn) {
-    // Fall back to default port (3306)
-    $conn = @mysqli_connect($host, $user, $pass, $db, 3306);
+if ($port !== null) {
+    $conn = @mysqli_connect($host, $user, $pass, $db, $port);
+} else {
+    // Try port 3307 first
+    $conn = @mysqli_connect($host, $user, $pass, $db, 3307);
+
+    if (!$conn) {
+        // Fall back to default port (3306)
+        $conn = @mysqli_connect($host, $user, $pass, $db, 3306);
+    }
 }
 
 if (!$conn) {
