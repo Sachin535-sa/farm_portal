@@ -1,9 +1,7 @@
 -- AgroNava Database Setup Script
 -- Use this file to import the database structure and sample data into phpMyAdmin (MySQL).
 
--- 1. Create Database if not exists
-CREATE DATABASE IF NOT EXISTS `farm_portal` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `farm_portal`;
+-- (Database creation statements removed for compatibility with shared hosting)
 
 -- --------------------------------------------------------
 

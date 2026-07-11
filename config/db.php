@@ -1,12 +1,14 @@
 <?php
 mysqli_report(MYSQLI_REPORT_OFF);
-$host = 'localhost';
-$user = 'root';
-$pass = '';
-$db   = 'farm_portal';
-$port = null;
 
-// Load production/custom database configuration if present
+// Load database details from environment variables (for Render/Docker), falling back to defaults
+$host = getenv('DB_HOST') ?: 'localhost';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
+$db   = getenv('DB_NAME') ?: 'farm_portal';
+$port = getenv('DB_PORT') !== false ? intval(getenv('DB_PORT')) : null;
+
+// Load production/custom database configuration if present (for local/manual overrides)
 if (file_exists(__DIR__ . '/db_config.php')) {
     include __DIR__ . '/db_config.php';
 }
