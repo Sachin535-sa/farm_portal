@@ -160,7 +160,7 @@ $result = mysqli_query($conn, "SELECT * FROM crops WHERE farmer_id='$farmer_id'"
     <title>Farmer Dashboard | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1.1">
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
