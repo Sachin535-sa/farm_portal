@@ -162,6 +162,56 @@ $result = mysqli_query($conn, "SELECT * FROM crops WHERE farmer_id='$farmer_id'"
     <!-- Link styles -->
     <link rel="stylesheet" href="../assets/css/style.css?v=1.1">
     
+    <style>
+        /* Force stats cards into a horizontal row/grid format */
+        .stats-grid {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)) !important;
+            gap: 24px !important;
+            margin-bottom: 32px !important;
+        }
+        .stat-card {
+            background: white !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important;
+            border-radius: 14px !important;
+            padding: 24px !important;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 20px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+            transition: all 0.3s ease !important;
+            box-sizing: border-box !important;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px) !important;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06) !important;
+        }
+        .stat-icon {
+            width: 56px !important;
+            height: 56px !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-size: 24px !important;
+            flex-shrink: 0 !important;
+        }
+        .stat-val {
+            font-family: 'Outfit', sans-serif !important;
+            font-size: 28px !important;
+            font-weight: 800 !important;
+            color: #0f172a !important;
+            line-height: 1.2 !important;
+        }
+        .stat-label {
+            font-size: 13px !important;
+            color: #64748b !important;
+            font-weight: 500 !important;
+            margin-top: 4px !important;
+        }
+    </style>
+    
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
