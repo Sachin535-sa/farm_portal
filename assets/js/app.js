@@ -1,12 +1,18 @@
 // AgroNava - Premium Interactivity System
-document.addEventListener("DOMContentLoaded", () => {
+function initApp() {
     // Initializing micro-animations & modal mechanisms
     initializeModals();
     initializeMarketPriceChart();
     initializeMarketplaceFilters();
     initializeNotifications();
     initializeCommunityReporting();
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+} else {
+    initApp();
+}
 
 /**
  * Handles show, hide, and total amount calculation in ordering modals.
