@@ -50,7 +50,7 @@ if ($status === 'delivered') $step = 4; // Delivered
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quality Passport Trace | AgroNava</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -162,14 +162,18 @@ if ($status === 'delivered') $step = 4; // Delivered
             letter-spacing: 0.5px;
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
     <header class="navbar" style="background: rgba(9, 14, 20, 0.85); border-color: rgba(255, 255, 255, 0.08);">
         <a href="dashboard.php" class="navbar-brand" style="color: #10b981;">
-            <span>🌾</span> AgroNava
+            <span><i class='ph-duotone ph-plant'></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="dashboard.php" style="color: var(--text-light); font-weight: 600;">Dashboard</a>
             <a href="marketplace.php" style="color: var(--text-light); font-weight: 600;">Marketplace</a>
             <a href="my_orders.php" style="color: var(--text-light); font-weight: 600;">My Orders</a>
@@ -180,7 +184,7 @@ if ($status === 'delivered') $step = 4; // Delivered
 
         <div class="quality-header-card">
             <div>
-                <h4 style="margin: 0; color: #34d399; font-size: 15px; text-transform: uppercase; letter-spacing: 1px;">🛡️ Safe Custody Trace Active</h4>
+                <h4 style="margin: 0; color: #34d399; font-size: 15px; text-transform: uppercase; letter-spacing: 1px;"><i class='ph-duotone ph-shield-check'></i> Safe Custody Trace Active</h4>
                 <h2 style="margin: 6px 0 0 0; font-size: 26px; font-family: 'Outfit', sans-serif; color: white;">Order Quality Passport</h2>
                 <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">Cryptographic QR trace sequence verifying dispatch and logistics seal custody.</p>
             </div>
@@ -197,7 +201,7 @@ if ($status === 'delivered') $step = 4; // Delivered
             </div>
             <div>
                 <?php if ($order['is_organic'] == 1): ?>
-                    <span class="badge-organic">🌱 Certified Organic</span>
+                    <span class="badge-organic"><i class='ph-duotone ph-leaf'></i> Certified Organic</span>
                 <?php endif; ?>
             </div>
         </div>
@@ -209,7 +213,7 @@ if ($status === 'delivered') $step = 4; // Delivered
             <div class="timeline-step completed">
                 <div class="timeline-card">
                     <h3 style="font-size: 16px; color: white; display: flex; align-items: center; gap: 8px;">
-                        <span>🌱</span> Step 1: Harvested & Inspected
+                        <span><i class='ph-duotone ph-leaf'></i></span> Step 1: Harvested & Inspected
                     </h3>
                     <p style="color: #94a3b8; font-size: 13px; margin: 8px 0 12px 0; line-height: 1.5;">
                         Crop quality graded and verified at farmer node prior to packaging listings.
@@ -229,7 +233,7 @@ if ($status === 'delivered') $step = 4; // Delivered
             <div class="timeline-step <?php echo $step_2_class; ?>">
                 <div class="timeline-card">
                     <h3 style="font-size: 16px; color: white; display: flex; align-items: center; gap: 8px;">
-                        <span>📦</span> Step 2: Sealed & Dispatched
+                        <span><i class='ph-duotone ph-package'></i></span> Step 2: Sealed & Dispatched
                     </h3>
                     
                     <?php if ($order['original_parcel_image']) { ?>
@@ -242,7 +246,7 @@ if ($status === 'delivered') $step = 4; // Delivered
                         <img src="../uploads/parcels/<?php echo $order['original_parcel_image']; ?>" alt="Farmer Dispatch Proof" class="trace-image">
                     <?php } else { ?>
                         <p style="color: #64748b; font-size: 13px; margin: 8px 0 0 0; line-height: 1.5;">
-                            ⏳ Awaiting farmer packaging verification proof upload.
+                            <i class='ph-duotone ph-hourglass-high'></i> Awaiting farmer packaging verification proof upload.
                         </p>
                     <?php } ?>
                 </div>
@@ -255,7 +259,7 @@ if ($status === 'delivered') $step = 4; // Delivered
             <div class="timeline-step <?php echo $step_3_class; ?>">
                 <div class="timeline-card">
                     <h3 style="font-size: 16px; color: white; display: flex; align-items: center; gap: 8px;">
-                        <span>🚚</span> Step 3: Logistics Transit Custody
+                        <span><i class='ph-duotone ph-truck'></i></span> Step 3: Logistics Transit Custody
                     </h3>
                     
                     <?php if ($order['delivery_proof_image']) { ?>
@@ -269,7 +273,7 @@ if ($status === 'delivered') $step = 4; // Delivered
                         <img src="../uploads/seals/<?php echo $order['delivery_proof_image']; ?>" alt="Logistics Seal Proof" class="trace-image">
                     <?php } else { ?>
                         <p style="color: #64748b; font-size: 13px; margin: 8px 0 0 0; line-height: 1.5;">
-                            ⏳ Logistics transit seal confirmation pending pickup.
+                            <i class='ph-duotone ph-hourglass-high'></i> Logistics transit seal confirmation pending pickup.
                         </p>
                     <?php } ?>
                 </div>
@@ -282,19 +286,19 @@ if ($status === 'delivered') $step = 4; // Delivered
             <div class="timeline-step <?php echo $step_4_class; ?>">
                 <div class="timeline-card">
                     <h3 style="font-size: 16px; color: white; display: flex; align-items: center; gap: 8px;">
-                        <span>🤝</span> Step 4: Settle & Deliver
+                        <span><i class='ph-duotone ph-handshake'></i></span> Step 4: Settle & Deliver
                     </h3>
                     
                     <?php if ($status === 'delivered') { ?>
                         <p style="color: #34d399; font-size: 13px; font-weight: 600; margin: 8px 0 0 0;">
-                            ✅ Payout successfully released from Escrow Vault.
+                            <i class='ph-duotone ph-check-circle'></i> Payout successfully released from Escrow Vault.
                         </p>
                         <p style="color: #94a3b8; font-size: 13px; margin: 8px 0 0 0; line-height: 1.5;">
                             Delivery completed and authorized securely with customer OTP code verification.
                         </p>
                     <?php } else { ?>
                         <p style="color: #64748b; font-size: 13px; margin: 8px 0 0 0; line-height: 1.5;">
-                            ⏳ Awaiting final OTP delivery authorization handshake.
+                            <i class='ph-duotone ph-hourglass-high'></i> Awaiting final OTP delivery authorization handshake.
                         </p>
                         <div style="margin-top: 12px; background: rgba(52, 211, 153, 0.05); border: 1px dashed rgba(52, 211, 153, 0.2); padding: 12px; border-radius: 8px; font-size: 13px; color: #34d399;">
                             🔑 Your Secure Delivery Verification OTP: <b><?php echo htmlspecialchars($order['delivery_otp'] ?? 'N/A'); ?></b>
@@ -307,5 +311,7 @@ if ($status === 'delivered') $step = 4; // Delivered
 
     </div>
 
+    <!-- Scripting integration -->
+    <script src="../assets/js/app.js"></script>
 </body>
 </html>

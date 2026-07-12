@@ -77,11 +77,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
             $crop_name = $order_details['crop_name'];
             $buyer_id = $order_details['buyer_id'];
             
-            $buyer_msg = "🎉 Handover Confirmed! Your order #$order_id for $qty kg of $crop_name has been successfully delivered by the grower.";
+            $buyer_msg = "<i class='ph-duotone ph-party-popper'></i> Handover Confirmed! Your order #$order_id for $qty kg of $crop_name has been successfully delivered by the grower.";
             $buyer_msg_clean = mysqli_real_escape_string($conn, $buyer_msg);
             mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$buyer_msg_clean')");
             
-            $farmer_msg = "🤝 Trade Finalized! Handover verified for Order #$order_id ($qty kg of $crop_name). Payment is now settled.";
+            $farmer_msg = "<i class='ph-duotone ph-handshake'></i> Trade Finalized! Handover verified for Order #$order_id ($qty kg of $crop_name). Payment is now settled.";
             $farmer_msg_clean = mysqli_real_escape_string($conn, $farmer_msg);
             mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$farmer_id', '$farmer_msg_clean')");
             
@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
     <title>Handover Verification | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
     
     <style>
         .celebration-container {
@@ -201,19 +201,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
             border: 1px solid rgba(16, 185, 129, 0.15);
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
     <header class="navbar">
         <a href="dashboard.php" class="navbar-brand">
-            <span>🌾</span> AgroNava
+            <span><i class='ph-duotone ph-plant'></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="dashboard.php" style="color: var(--text-muted); font-weight: 600;">My Listings</a>
             <a href="orders.php" style="color: var(--text-muted); font-weight: 600;">Manage Orders</a>
             <a href="../market_prices.php" style="color: var(--text-muted); font-weight: 600;">Live Prices</a>
             <div class="user-badge">
-                <span>👨‍🌾</span> <?php echo htmlspecialchars($_SESSION['name']); ?>
+                <span>👨‍<i class='ph-duotone ph-plant'></i></span> <?php echo htmlspecialchars($_SESSION['name']); ?>
             </div>
             <a class="btn btn-danger" style="padding: 8px 16px; font-size: 13px;" href="../auth/logout.php">Logout</a>
         </div>
@@ -260,7 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
         <?php elseif ($success && $order_details): ?>
             
             <div class="celebration-card animate-slide">
-                <div class="success-seal">🎉</div>
+                <div class="success-seal"><i class='ph-duotone ph-party-popper'></i></div>
                 
                 <h1 style="font-size: 32px; color: var(--secondary); margin-bottom: 12px;">
                     Handover Verified!
@@ -271,7 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
                 </p>
 
                 <div class="settled-badge">
-                    🛡️ Trade Completed & Settled
+                    <i class='ph-duotone ph-shield-check'></i> Trade Completed & Settled
                 </div>
 
                 <div class="details-grid">
@@ -281,7 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
                     </div>
                     <div class="details-row">
                         <span style="color: var(--text-muted);">Fresh Produce Crop:</span>
-                        <span style="font-weight: 700; color: var(--dark);">🌾 <?php echo htmlspecialchars($order_details['crop_name']); ?></span>
+                        <span style="font-weight: 700; color: var(--dark);"><i class='ph-duotone ph-plant'></i> <?php echo htmlspecialchars($order_details['crop_name']); ?></span>
                     </div>
                     <div class="details-row">
                         <span style="color: var(--text-muted);">Quantity Delivered:</span>
@@ -311,7 +315,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
 
             <div class="celebration-card animate-slide" style="border-color: rgba(239, 68, 68, 0.2);">
                 <div class="success-seal" style="background: var(--danger-light); color: var(--danger); border-color: rgba(239, 68, 68, 0.2); box-shadow: none;">
-                    ⚠️
+                    <i class='ph-duotone ph-warning'></i>
                 </div>
                 
                 <h1 style="font-size: 32px; color: var(--danger); margin-bottom: 12px;">
@@ -336,5 +340,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
 
     </div>
 
+    <!-- Scripting integration -->
+    <script src="../assets/js/app.js"></script>
 </body>
 </html>

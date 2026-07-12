@@ -113,7 +113,7 @@ if ($res_badges) {
     <title><?php echo htmlspecialchars($farmer['name']); ?> Portfolio | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
     
     <style>
         .profile-header {
@@ -186,21 +186,25 @@ if ($res_badges) {
             }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
     <!-- Header bar dynamically adjusting to session -->
     <header class="navbar">
         <a href="../index.php" class="navbar-brand">
-            <span>🌾</span> AgroNava
+            <span><i class='ph-duotone ph-plant'></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <?php if($_SESSION['role'] == 'farmer') { ?>
                 <a href="dashboard.php" style="color: var(--secondary); font-weight: 700;">My Listings</a>
-                <div class="user-badge">👨‍🌾 <?php echo htmlspecialchars($_SESSION['name']); ?></div>
+                <div class="user-badge">👨‍<i class='ph-duotone ph-plant'></i> <?php echo htmlspecialchars($_SESSION['name']); ?></div>
             <?php } else { ?>
                 <a href="../buyer/marketplace.php" style="color: var(--secondary); font-weight: 700;">Marketplace</a>
-                <div class="user-badge">🛒 <?php echo htmlspecialchars($_SESSION['name']); ?></div>
+                <div class="user-badge"><i class='ph-duotone ph-shopping-cart'></i> <?php echo htmlspecialchars($_SESSION['name']); ?></div>
             <?php } ?>
             <a class="btn btn-danger" style="padding: 8px 16px; font-size: 13px;" href="../auth/logout.php">Logout</a>
         </div>
@@ -223,7 +227,7 @@ if ($res_badges) {
             <div class="glass-card animate-slide" style="display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
                     <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
-                        <span style="font-size: 48px;">👨‍🌾</span>
+                        <span style="font-size: 48px;">👨‍<i class='ph-duotone ph-plant'></i></span>
                         <div>
                             <h1 style="font-size: 28px; color: var(--dark); line-height: 1.1;">
                                 <?php echo htmlspecialchars($farmer['name']); ?>
@@ -234,7 +238,7 @@ if ($res_badges) {
                                 </span>
                                 <?php if (!empty($distributor_badge)) { ?>
                                     <span class="badge" style="background: rgba(15, 118, 110, 0.1); color: var(--secondary); font-size: 11px;">
-                                        🛡️ <?php echo htmlspecialchars($distributor_badge); ?>
+                                        <i class='ph-duotone ph-shield-check'></i> <?php echo htmlspecialchars($distributor_badge); ?>
                                     </span>
                                 <?php } ?>
                             </div>
@@ -248,13 +252,13 @@ if ($res_badges) {
                     <!-- Sustainability Accomplishments Showcase -->
                     <?php if (!empty($accomplishments)) { ?>
                         <div style="margin-top: 16px; border-top: 1px dashed var(--border); padding-top: 12px; margin-bottom: 16px;">
-                            <span style="display: block; font-size: 11px; color: var(--secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;">🌱 Sustainable accomplishments</span>
+                            <span style="display: block; font-size: 11px; color: var(--secondary); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px;"><i class='ph-duotone ph-leaf'></i> Sustainable accomplishments</span>
                             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                                 <?php foreach ($accomplishments as $badge) { 
                                     if ($badge == 'organic') {
-                                        echo '<span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--primary-hover); font-size: 11px; font-weight: 600; padding: 4px 8px;">🌱 Organic Certified</span>';
+                                        echo '<span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--primary-hover); font-size: 11px; font-weight: 600; padding: 4px 8px;"><i class="ph-duotone ph-leaf"></i> Organic Certified</span>';
                                     } else if ($badge == 'water_efficient') {
-                                        echo '<span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb; font-size: 11px; font-weight: 600; padding: 4px 8px;">💧 Water Efficient</span>';
+                                        echo '<span class="badge" style="background: rgba(59, 130, 246, 0.1); color: #2563eb; font-size: 11px; font-weight: 600; padding: 4px 8px;"><i class="ph-duotone ph-drop"></i> Water Efficient</span>';
                                     } else if ($badge == 'eco_friendly') {
                                         echo '<span class="badge" style="background: rgba(245, 158, 11, 0.1); color: #d97706; font-size: 11px; font-weight: 600; padding: 4px 8px;">♻ Eco-Friendly Methodologies</span>';
                                     }
@@ -315,7 +319,7 @@ if ($res_badges) {
 
                 <?php if ($flagged_crops_count >= 2) { ?>
                     <div style="background: var(--danger-light); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 10.5px; font-weight: 700; margin-top: 14px; display: flex; align-items: center; gap: 6px; text-align: left; line-height: 1.3;">
-                        <span>⚠️</span>
+                        <span><i class='ph-duotone ph-warning'></i></span>
                         <span><strong>SEVERE WARNING:</strong> Multiple listings flagged for suspicious price audits.</span>
                     </div>
                 <?php } ?>
@@ -335,7 +339,7 @@ if ($res_badges) {
         </div>
 
         <!-- Dynamic catalog by this specific farmer -->
-        <h2 style="font-size: 22px; color: var(--dark); margin-bottom: 20px;">🌾 Active Harvest Offerings by this Farmer</h2>
+        <h2 style="font-size: 22px; color: var(--dark); margin-bottom: 20px;"><i class='ph-duotone ph-plant'></i> Active Harvest Offerings by this Farmer</h2>
 
         <?php if(mysqli_num_rows($result_crops) > 0) { ?>
             
@@ -347,7 +351,7 @@ if ($res_badges) {
                     
                     // Deduce emoji
                     $emoji = "🥦";
-                    if (stripos($crop_name, "wheat") !== false) $emoji = "🌾";
+                    if (stripos($crop_name, "wheat") !== false) $emoji = "<i class='ph-duotone ph-plant'></i>";
                     else if (stripos($crop_name, "rice") !== false || stripos($crop_name, "paddy") !== false) $emoji = "🍚";
                     else if (stripos($crop_name, "potato") !== false) $emoji = "🥔";
                     else if (stripos($crop_name, "tomato") !== false) $emoji = "🍅";
@@ -378,7 +382,7 @@ if ($res_badges) {
                         <!-- Ratings & Sales indicators -->
                         <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 14px; color: var(--text-muted); font-weight: 500;">
                             <span style="color: #f59e0b; font-weight: 700;">⭐ <?php echo number_format($row['rating_avg'], 1); ?> <span style="font-size: 11px; color: var(--text-muted); font-weight: 500;">(<?php echo $row['review_count']; ?>)</span></span>
-                            <span>📈 <?php echo $row['sales_volume']; ?> kg sold</span>
+                            <span><i class='ph-duotone ph-trend-up'></i> <?php echo $row['sales_volume']; ?> kg sold</span>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -421,7 +425,7 @@ if ($res_badges) {
         <div class="modal-content">
             
             <div class="modal-header">
-                <h3 id="modal-crop-name" style="font-size: 20px; color: var(--dark);">🌾 Place Order</h3>
+                <h3 id="modal-crop-name" style="font-size: 20px; color: var(--dark);"><i class='ph-duotone ph-plant'></i> Place Order</h3>
                 <button class="close-btn">&times;</button>
             </div>
             
@@ -453,7 +457,7 @@ if ($res_badges) {
                         Cancel
                     </button>
                     <button type="submit" name="place_order" class="btn btn-primary" style="flex: 1.5; justify-content: center;">
-                        Confirm Purchase 🤝
+                        Confirm Purchase <i class='ph-duotone ph-handshake'></i>
                     </button>
                 </div>
                 

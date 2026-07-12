@@ -7,7 +7,7 @@ $name = isset($_SESSION['name']) ? $_SESSION['name'] : '';
 
 // Mock MSP details for the analytics table
 $msp_data = [
-    ['name' => '🌾 Wheat (Kanak)', 'msp' => '2275', 'portal' => '2350', 'status' => 'High Demand', 'color' => 'var(--primary-hover)'],
+    ['name' => '<i class="ph-duotone ph-plant"></i> Wheat (Kanak)', 'msp' => '2275', 'portal' => '2350', 'status' => 'High Demand', 'color' => 'var(--primary-hover)'],
     ['name' => '🍚 Paddy (Basmati)', 'msp' => '2203', 'portal' => '2410', 'status' => 'Surge', 'color' => '#3b82f6'],
     ['name' => '🥔 Potato (Kufri)', 'msp' => '1200', 'portal' => '1380', 'status' => 'Stable', 'color' => 'var(--warning)'],
     ['name' => '🍅 Tomato (Desi)', 'msp' => '1500', 'portal' => '1890', 'status' => 'Oversupply', 'color' => 'var(--danger)'],
@@ -22,7 +22,7 @@ $msp_data = [
     <title>Live MSP & Market Prices | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
     
     <style>
         .price-table {
@@ -62,22 +62,26 @@ $msp_data = [
             font-weight: 700;
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
     <!-- Header bar dynamically adjusting to session -->
     <header class="navbar">
         <a href="index.php" class="navbar-brand">
-            <span>🌾</span> AgroNava
+            <span><i class="ph-duotone ph-plant"></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="market_prices.php" style="color: var(--secondary); font-weight: 700;">Live Prices</a>
             <?php if($role == 'farmer') { ?>
                 <a href="farmer/dashboard.php" style="color: var(--text-muted); font-weight: 600;">My Listings</a>
-                <div class="user-badge">👨‍🌾 <?php echo htmlspecialchars($name); ?></div>
+                <div class="user-badge">👨‍<i class="ph-duotone ph-plant"></i> <?php echo htmlspecialchars($name); ?></div>
             <?php } else if($role == 'buyer') { ?>
                 <a href="buyer/marketplace.php" style="color: var(--text-muted); font-weight: 600;">Marketplace</a>
-                <div class="user-badge">🛒 <?php echo htmlspecialchars($name); ?></div>
+                <div class="user-badge"><i class="ph-duotone ph-shopping-cart"></i> <?php echo htmlspecialchars($name); ?></div>
             <?php } else { ?>
                 <a href="auth/login.php" class="btn btn-secondary">Sign In</a>
                 <a href="auth/register.php" class="btn btn-primary">Join Now</a>
@@ -106,7 +110,7 @@ $msp_data = [
         <div class="chart-container">
             <div class="chart-header">
                 <div>
-                    <h3 style="font-size: 18px; color: var(--dark);">📊 Consolidated MSP Price Trends (2026 Index)</h3>
+                    <h3 style="font-size: 18px; color: var(--dark);"><i class="ph-duotone ph-chart-line-up"></i> Consolidated MSP Price Trends (2026 Index)</h3>
                     <p style="color: var(--text-muted); font-size: 13px;">Fluctuation analytics of core commodity rates (₹ per Quintal)</p>
                 </div>
                 <div style="text-align: right;">
@@ -134,7 +138,7 @@ $msp_data = [
         </div>
 
         <!-- Comparative MSP Listing Board -->
-        <h2 style="font-size: 22px; color: var(--dark); margin-bottom: 8px;">🌾 MSP rates vs AgroNava Direct Rates</h2>
+        <h2 style="font-size: 22px; color: var(--dark); margin-bottom: 8px;"><i class="ph-duotone ph-plant"></i> MSP rates vs AgroNava Direct Rates</h2>
         <p style="color: var(--text-muted); font-size: 14px;">Direct AgroNava trade cuts out commissions, netting farmers higher profits.</p>
 
         <table class="price-table animate-slide">

@@ -18,7 +18,7 @@ $farmer_id = $_SESSION['user_id'];
     <title>Smart Crop Yield & Price Predictor | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
     
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -108,20 +108,24 @@ $farmer_id = $_SESSION['user_id'];
             letter-spacing: 0.5px;
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body style="background: #f1f5f9; min-height: 100vh;">
 
     <!-- Header bar -->
     <header class="navbar">
         <a href="dashboard.php" class="navbar-brand">
-            <span>🌾</span> AgroNava
+            <span><i class='ph-duotone ph-plant'></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="dashboard.php" style="color: var(--text-muted); font-weight: 600;">My Listings</a>
             <a href="orders.php" style="color: var(--text-muted); font-weight: 600;">Manage Orders</a>
             <a href="../market_prices.php" style="color: var(--text-muted); font-weight: 600;">Live Prices</a>
             <div class="user-badge">
-                <span>👨‍🌾</span> <?php echo htmlspecialchars($_SESSION['name']); ?>
+                <span>👨‍<i class='ph-duotone ph-plant'></i></span> <?php echo htmlspecialchars($_SESSION['name']); ?>
             </div>
             <a class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px;" href="dashboard.php">← Back to Dashboard</a>
         </div>
@@ -137,24 +141,24 @@ $farmer_id = $_SESSION['user_id'];
         <div class="predictor-container">
             <!-- Left Side: Simulator Inputs -->
             <div class="glass-panel animate-slide">
-                <h3 style="font-size: 18px; color: var(--dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">⚙️ Sowing Parameters</h3>
+                <h3 style="font-size: 18px; color: var(--dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border);"><i class='ph-duotone ph-gear'></i> Sowing Parameters</h3>
                 
                 <!-- Input 1: Crop Selection -->
                 <div class="form-group">
-                    <label class="form-label" for="sim-crop">🌾 Sown Produce Type</label>
+                    <label class="form-label" for="sim-crop"><i class='ph-duotone ph-plant'></i> Sown Produce Type</label>
                     <select id="sim-crop" class="form-control" style="background-color: white;">
                         <option value="rice">🍚 Basmati Paddy (Rice)</option>
-                        <option value="wheat" selected>🌾 Sharbati Wheat (Kanak)</option>
+                        <option value="wheat" selected><i class='ph-duotone ph-plant'></i> Sharbati Wheat (Kanak)</option>
                         <option value="potatoes">🥔 Kufri Jyoti Potatoes</option>
                         <option value="tomatoes">🍅 Fresh Desi Red Tomatoes</option>
-                        <option value="mustard">🌱 Organic Mustard Seeds</option>
+                        <option value="mustard"><i class='ph-duotone ph-leaf'></i> Organic Mustard Seeds</option>
                     </select>
                 </div>
 
                 <!-- Input 2: Land Area in Acres -->
                 <div class="slider-group">
                     <div class="slider-label-row">
-                        <label class="form-label" style="margin: 0;">🚜 Cultivated Land Size</label>
+                        <label class="form-label" style="margin: 0;"><i class='ph-duotone ph-tractor'></i> Cultivated Land Size</label>
                         <span style="font-weight: 700; color: var(--secondary); font-size: 14px;"><span id="val-acres">5</span> Acres</span>
                     </div>
                     <input type="range" id="sim-acres" class="range-slider" min="1" max="50" value="5">
@@ -173,7 +177,7 @@ $farmer_id = $_SESSION['user_id'];
 
                 <!-- Input 4: Irrigation Level -->
                 <div class="form-group">
-                    <label class="form-label" for="sim-irrigation">💧 Irrigation Frequency</label>
+                    <label class="form-label" for="sim-irrigation"><i class='ph-duotone ph-drop'></i> Irrigation Frequency</label>
                     <select id="sim-irrigation" class="form-control" style="background-color: white;">
                         <option value="medium" selected>Standard Balanced Irrigation</option>
                         <option value="high">Heavy Automated Flooding</option>
@@ -196,7 +200,7 @@ $farmer_id = $_SESSION['user_id'];
             <!-- Right Side: Live Forecasting Stats & Curve Charts -->
             <div class="glass-panel animate-slide" style="display: flex; flex-direction: column; justify-content: space-between;">
                 <div>
-                    <h3 style="font-size: 18px; color: var(--dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">📊 Simulated Harvest Projection</h3>
+                    <h3 style="font-size: 18px; color: var(--dark); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border);"><i class='ph-duotone ph-chart-line-up'></i> Simulated Harvest Projection</h3>
                     
                     <!-- Projection Cards -->
                     <div class="metric-card-grid">
@@ -221,7 +225,7 @@ $farmer_id = $_SESSION['user_id'];
 
                 <!-- Live Updates Chart Area -->
                 <div>
-                    <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">📈 Dynamic input profit curve</h4>
+                    <h4 style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;"><i class='ph-duotone ph-trend-up'></i> Dynamic input profit curve</h4>
                     <div style="position: relative; height: 230px; width: 100%;">
                         <canvas id="predictorCurveChart"></canvas>
                     </div>
@@ -354,6 +358,27 @@ $farmer_id = $_SESSION['user_id'];
                 chartInstance.destroy();
             }
 
+            // Global Chart Defaults for Premium Look
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = "#64748b";
+            Chart.defaults.scale.grid.color = "rgba(0,0,0,0.03)";
+            
+            const premiumTooltip = {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleFont: { size: 13, family: "'Inter', sans-serif", weight: 'bold' },
+                bodyFont: { size: 13, family: "'Inter', sans-serif" },
+                padding: 12,
+                cornerRadius: 8,
+                displayColors: true,
+                boxPadding: 4,
+                mode: 'index',
+                intersect: false
+            };
+
+            let lineGradient = ctx.createLinearGradient(0, 0, 0, 300);
+            lineGradient.addColorStop(0, 'rgba(16, 185, 129, 0.3)');
+            lineGradient.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+
             chartInstance = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -363,36 +388,47 @@ $farmer_id = $_SESSION['user_id'];
                             label: 'Direct Trade Profits (AgroNava)',
                             data: curveDataDirect,
                             borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            backgroundColor: lineGradient,
                             borderWidth: 3,
                             fill: true,
-                            tension: 0.3
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderWidth: 2
                         },
                         {
                             label: 'Govt MSP Profits (Wholesale)',
                             data: curveDataMsp,
-                            borderColor: '#64748b',
+                            borderColor: '#94a3b8',
                             backgroundColor: 'transparent',
                             borderWidth: 2,
                             borderDash: [5, 5],
-                            tension: 0.3
+                            tension: 0.4,
+                            pointRadius: 0,
+                            pointHoverRadius: 4
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
                     plugins: {
-                        legend: { position: 'top', labels: { boxWidth: 10, font: { size: 10 } } }
+                        legend: { position: 'top', labels: { boxWidth: 10, font: { size: 12, family: "'Inter', sans-serif", weight: '500' } } },
+                        tooltip: premiumTooltip
                     },
                     scales: {
                         y: {
-                            grid: { color: 'rgba(0,0,0,0.04)' },
-                            ticks: { font: { size: 9 } }
+                            grid: { drawBorder: false },
+                            ticks: { font: { size: 10 } }
                         },
                         x: {
-                            grid: { display: false },
-                            ticks: { font: { size: 9 } }
+                            grid: { display: false, drawBorder: false },
+                            ticks: { font: { size: 10 } }
                         }
                     }
                 }
@@ -410,5 +446,7 @@ $farmer_id = $_SESSION['user_id'];
         simulateAgronomy();
     });
     </script>
+    <!-- Scripting integration -->
+    <script src="../assets/js/app.js"></script>
 </body>
 </html>

@@ -81,7 +81,7 @@ if (!empty($crop) && empty($error) && isset($_POST['confirm_order'])) {
             mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$bmsg')");
 
             // Notify farmer
-            $fmsg = mysqli_real_escape_string($conn, "🌾 New QR Order #{$new_order_id}: Buyer ordered {$qty_to_order}kg of {$crop['crop_name']}. Please process it!");
+            $fmsg = mysqli_real_escape_string($conn, "<i class='ph-duotone ph-plant'></i> New QR Order #{$new_order_id}: Buyer ordered {$qty_to_order}kg of {$crop['crop_name']}. Please process it!");
             mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('{$crop['farmer_id']}', '$fmsg')");
 
             mysqli_commit($conn);
@@ -113,11 +113,11 @@ if ($order_id_placed > 0) {
 
 // ── Delivery timeline helper ─────────────────────────────────────
 $timeline_stages = [
-    ['key' => 'pending',   'label' => 'Order Placed',    'icon' => '📝', 'eta' => 'Just now',          'desc' => 'Your order has been received by the farmer.'],
-    ['key' => 'accepted',  'label' => 'Farmer Accepted', 'icon' => '🤝', 'eta' => 'Within 2 hours',    'desc' => 'Farmer has confirmed and is preparing your produce.'],
-    ['key' => 'packed',    'label' => 'Packed & Ready',  'icon' => '📦', 'eta' => 'Within 12 hours',   'desc' => 'Your order is packed and labelled for dispatch.'],
-    ['key' => 'shipped',   'label' => 'Out for Delivery', 'icon' => '🚚', 'eta' => '1–2 business days', 'desc' => 'Your parcel is on the way to your delivery address.'],
-    ['key' => 'delivered', 'label' => 'Delivered!',       'icon' => '✅', 'eta' => '2–4 business days', 'desc' => 'Order successfully delivered. Enjoy your fresh produce!'],
+    ['key' => 'pending',   'label' => 'Order Placed',    'icon' => '<i class="ph-duotone ph-file-text"></i>', 'eta' => 'Just now',          'desc' => 'Your order has been received by the farmer.'],
+    ['key' => 'accepted',  'label' => 'Farmer Accepted', 'icon' => '<i class="ph-duotone ph-handshake"></i>', 'eta' => 'Within 2 hours',    'desc' => 'Farmer has confirmed and is preparing your produce.'],
+    ['key' => 'packed',    'label' => 'Packed & Ready',  'icon' => '<i class="ph-duotone ph-package"></i>', 'eta' => 'Within 12 hours',   'desc' => 'Your order is packed and labelled for dispatch.'],
+    ['key' => 'shipped',   'label' => 'Out for Delivery', 'icon' => '<i class="ph-duotone ph-truck"></i>', 'eta' => '1–2 business days', 'desc' => 'Your parcel is on the way to your delivery address.'],
+    ['key' => 'delivered', 'label' => 'Delivered!',       'icon' => '<i class="ph-duotone ph-check-circle"></i>', 'eta' => '2–4 business days', 'desc' => 'Order successfully delivered. Enjoy your fresh produce!'],
 ];
 $current_status = $order ? strtolower($order['status']) : 'pending';
 $active_idx = 0;
@@ -437,11 +437,12 @@ body {
     .scan-header h1  { font-size: 24px; }
 }
 </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
 <nav class="nav">
-    <a href="../index.php" class="nav-brand">🌾 AgroNava</a>
+    <a href="../index.php" class="nav-brand"><i class='ph-duotone ph-plant'></i> AgroNava</a>
     <div class="nav-links">
         <a href="marketplace.php">Marketplace</a>
         <a href="my_orders.php">My Orders</a>
@@ -454,7 +455,7 @@ body {
 <?php if (!empty($error)): ?>
     <!-- ERROR STATE -->
     <div class="error-card">
-        <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+        <div style="font-size: 48px; margin-bottom: 16px;"><i class='ph-duotone ph-warning'></i></div>
         <h2>Something went wrong</h2>
         <p style="color: #6b7280; margin: 10px 0 24px;"><?= htmlspecialchars($error) ?></p>
         <a href="marketplace.php" style="display:inline-block; background:#dc2626; color:white; padding:12px 28px; border-radius:10px; font-weight:700; text-decoration:none;">← Go to Marketplace</a>
@@ -464,7 +465,7 @@ body {
     <!-- STEP 1: CONFIRM ORDER -->
     <div class="scan-confirm">
         <div class="scan-header">
-            <div class="badge">📱 QR Scan — Instant Order</div>
+            <div class="badge"><i class='ph-duotone ph-device-mobile'></i> QR Scan — Instant Order</div>
             <h1><?= htmlspecialchars($crop['crop_name']) ?></h1>
             <p>Listed by <strong><?= htmlspecialchars($crop['farmer_name']) ?></strong> · Review and confirm your order below</p>
         </div>
@@ -488,6 +489,7 @@ body {
             </div>
 
             <form method="POST" id="order-form">
+                <input type="hidden" name="confirm_order" value="1">
                 <input type="hidden" name="crop_id" value="<?= $crop_id ?>">
 
                 <div class="qty-selector">
@@ -507,7 +509,7 @@ body {
                 </div>
 
                 <button type="submit" name="confirm_order" class="btn-place" id="place-btn">
-                    ✅ Confirm & Place Order Instantly
+                    <i class='ph-duotone ph-check-circle'></i> Confirm & Place Order Instantly
                 </button>
             </form>
 
@@ -521,7 +523,7 @@ body {
     <!-- STEP 2: ORDER CONFIRMED + TRACKING -->
 
     <div class="success-banner">
-        <div class="checkmark">✅</div>
+        <div class="checkmark"><i class='ph-duotone ph-check-circle'></i></div>
         <h2>Order Placed Successfully!</h2>
         <p>Your QR scan order for <strong><?= htmlspecialchars($order['crop_name']) ?></strong> has been confirmed.</p>
         <div class="order-number">Order #<?= $order['id'] ?></div>
@@ -530,7 +532,7 @@ body {
     <!-- Live Delivery Tracking -->
     <div class="tracking-card">
         <div class="tracking-header">
-            <h3>📦 Live Delivery Tracking</h3>
+            <h3><i class='ph-duotone ph-package'></i> Live Delivery Tracking</h3>
             <div class="live-badge">
                 <div class="live-dot"></div>
                 Live Status
@@ -595,12 +597,12 @@ body {
 
     <div class="action-row">
         <a href="my_orders.php" class="btn-secondary">📋 View All My Orders</a>
-        <a href="marketplace.php" class="btn-primary-sm">🛒 Continue Shopping</a>
+        <a href="marketplace.php" class="btn-primary-sm"><i class='ph-duotone ph-shopping-cart'></i> Continue Shopping</a>
     </div>
 
 <?php else: ?>
     <div class="error-card">
-        <h2>⚠️ Invalid QR Code</h2>
+        <h2><i class='ph-duotone ph-warning'></i> Invalid QR Code</h2>
         <p style="color:#6b7280; margin: 12px 0 24px;">This QR code does not contain valid crop or buyer information.</p>
         <a href="marketplace.php" style="display:inline-block; background:#16a34a; color:white; padding:12px 28px; border-radius:10px; font-weight:700; text-decoration:none;">Browse Marketplace</a>
     </div>
@@ -620,7 +622,7 @@ function updateTotal() {
 // Prevent double-submit
 document.getElementById('order-form')?.addEventListener('submit', function() {
     const btn = document.getElementById('place-btn');
-    btn.textContent = '⏳ Placing Order...';
+    btn.textContent = '<i class='ph-duotone ph-hourglass-high'></i> Placing Order...';
     btn.disabled = true;
 });
 </script>

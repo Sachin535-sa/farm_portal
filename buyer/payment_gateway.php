@@ -57,12 +57,12 @@ if (isset($_POST['confirm_payment'])) {
                              VALUES ('$order_id', '$txn_id', '$payment_method', '$total_amount', 'success')");
 
         // 3. Insert notification for buyer
-        $notif_msg = mysqli_real_escape_string($conn, "💳 Payment Verified: Payout of ₹$total_amount secured in digital escrow for Order #$order_id.");
+        $notif_msg = mysqli_real_escape_string($conn, "<i class='ph-duotone ph-credit-card'></i> Payment Verified: Payout of ₹$total_amount secured in digital escrow for Order #$order_id.");
         mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$notif_msg')");
 
         // 4. Insert notification for farmer
         $farmer_id = $order['farmer_id'];
-        $farmer_msg = mysqli_real_escape_string($conn, "💰 Payment Escrowed: Buyer has paid ₹$total_amount for your crop order #$order_id. Funds will release upon physical delivery verification.");
+        $farmer_msg = mysqli_real_escape_string($conn, "<i class='ph-duotone ph-currency-circle-dollar'></i> Payment Escrowed: Buyer has paid ₹$total_amount for your crop order #$order_id. Funds will release upon physical delivery verification.");
         mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$farmer_id', '$farmer_msg')");
 
         mysqli_commit($conn);
@@ -80,7 +80,7 @@ if (isset($_POST['confirm_payment'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Secure UPI Escrow Terminal | AgroNava</title>
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -185,14 +185,18 @@ if (isset($_POST['confirm_payment'])) {
             padding-top: 18px;
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
     <header class="navbar" style="background: rgba(9, 14, 20, 0.85); border-color: rgba(255, 255, 255, 0.08);">
         <a href="dashboard.php" class="navbar-brand" style="color: #06b6d4;">
-            <span>🌾</span> AgroNava
+            <span><i class='ph-duotone ph-plant'></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="dashboard.php" style="color: var(--text-light); font-weight: 600;">Dashboard</a>
             <a href="marketplace.php" style="color: var(--text-light); font-weight: 600;">Marketplace</a>
             <a href="my_orders.php" style="color: var(--text-light); font-weight: 600;">My Orders</a>
@@ -202,7 +206,7 @@ if (isset($_POST['confirm_payment'])) {
     <div class="payment-container">
         
         <div class="escrow-shield">
-            <div class="shield-icon">🛡️</div>
+            <div class="shield-icon"><i class='ph-duotone ph-shield-check'></i></div>
             <div>
                 <h4 style="margin: 0; color: #06b6d4; font-size: 16px;">AgroNava Digital Escrow Guarantee</h4>
                 <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8; line-height: 1.4;">
@@ -249,7 +253,8 @@ if (isset($_POST['confirm_payment'])) {
                     <span>₹<?php echo number_format($total_amount); ?></span>
                 </div>
 
-                <form method="POST" id="payment-form" style="margin-top: 30px;">
+                <form method="POST" id="payment-form" style="margin-top: 30px;" onsubmit="return handlePaymentSubmit();">
+                    <input type="hidden" name="confirm_payment" value="1">
                     <input type="hidden" name="payment_method" id="selected-method" value="GPay">
                     
                     <h4 style="font-size: 14px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">Select Payment Service</h4>
@@ -260,8 +265,8 @@ if (isset($_POST['confirm_payment'])) {
                         <div class="method-btn" onclick="selectMethod('BHIM')">BHIM UPI</div>
                     </div>
 
-                    <button type="submit" name="confirm_payment" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #06b6d4, #0891b2); border-color: #06b6d4; box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);">
-                        ⚡ Simulate Payment Success
+                    <button type="submit" id="simulatePaymentBtn" name="confirm_payment" class="btn btn-primary" style="width: 100%; padding: 16px; font-size: 16px; font-weight: 700; background: linear-gradient(135deg, #06b6d4, #0891b2); border-color: #06b6d4; box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);">
+                        <span id="payment-btn-text"><i class='ph-duotone ph-lightning'></i> Simulate Payment Success</span>
                     </button>
                 </form>
             </div>
@@ -304,7 +309,22 @@ if (isset($_POST['confirm_payment'])) {
                 }
             });
         }
+        
+        function handlePaymentSubmit() {
+            const btn = document.getElementById('simulatePaymentBtn');
+            const text = document.getElementById('payment-btn-text');
+            
+            if (btn.disabled) return false;
+            
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            btn.style.cursor = 'not-allowed';
+            text.innerHTML = '<i class="ph-duotone ph-spinner animate-spin"></i> Securing Escrow...';
+            
+            return true;
+        }
     </script>
-
+    <!-- Scripting integration -->
+    <script src="../assets/js/app.js"></script>
 </body>
 </html>

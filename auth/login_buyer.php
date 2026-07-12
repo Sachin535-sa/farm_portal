@@ -45,7 +45,7 @@ if (isset($_POST['login'])) {
             exit();
         }
     } else {
-        $message = "🔒 Incorrect email or password. Please try again.";
+        $message = "<i class='ph-duotone ph-lock-key'></i> Incorrect email or password. Please try again.";
     }
 }
 ?>
@@ -366,6 +366,7 @@ if (isset($_POST['login'])) {
             .qr-hex img { width: 45px; height: 45px; }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 

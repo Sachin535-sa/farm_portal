@@ -33,7 +33,7 @@ if ($role === 'farmer') {
         $theme_color = "#f59e0b"; // Sunset Gold
         $glow_color = "rgba(245, 158, 11, 0.6)";
         $role_title = "Grower Console";
-        $welcome_text = "🌾 Welcome Back, " . htmlspecialchars($display_name) . "!";
+        $welcome_text = "<i class='ph-duotone ph-plant'></i> Welcome Back, " . htmlspecialchars($display_name) . "!";
         $bg_gradient = "radial-gradient(circle at 50% 50%, #fffbeb 0%, #fef3c7 100%)";
         $text_color = "#0f172a";
         $card_bg = "rgba(255, 255, 255, 0.85)";
@@ -72,7 +72,7 @@ if ($role === 'farmer') {
 
 if (empty($display_name)) {
     // Fallback if user not found in DB
-    $message = "⚠️ Demo test user not found. Please register an account first!";
+    $message = "<i class='ph-duotone ph-warning'></i> Demo test user not found. Please register an account first!";
     echo "<div style='color: #0f172a; background: #fffbeb; padding: 20px; font-family: sans-serif; text-align: center; border: 1px solid #f59e0b;'>$message<br><a href='register.php' style='color: #06b6d4;'>Go to Registration</a></div>";
     exit();
 }
@@ -183,6 +183,7 @@ if (empty($display_name)) {
             100% { transform: rotate(-360deg); }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 

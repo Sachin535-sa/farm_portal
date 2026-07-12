@@ -397,4 +397,55 @@ if ($del_partner_check && mysqli_num_rows($del_partner_check) == 0) {
 } else {
     mysqli_query($conn, "UPDATE `users` SET `password` = 'password123' WHERE `email` = 'vijay@delivery.com'");
 }
+
+// ── Notification Renderer Helper ────────────────────────────────────
+function get_notification_html($notif, $is_dashboard = false) {
+    $msg = $notif['message'];
+    
+    // Determine category based on message content
+    $type_class = '';
+    if (stripos($msg, 'Payment Escrowed') !== false || stripos($msg, 'Payment Settled') !== false || stripos($msg, 'Escrowed') !== false || stripos($msg, 'Payment Verified') !== false) {
+        $type_class = 'notif-payment';
+    } elseif (stripos($msg, 'Warning') !== false || stripos($msg, 'Low Stock') !== false || stripos($msg, 'Suspicious') !== false) {
+        $type_class = 'notif-warning';
+    } elseif (stripos($msg, 'cancelled') !== false || stripos($msg, 'cancel') !== false) {
+        $type_class = 'notif-cancel';
+    } elseif (stripos($msg, 'Trade Finalized') !== false || stripos($msg, 'Successful') !== false || stripos($msg, 'successfully') !== false || stripos($msg, 'Verified') !== false) {
+        $type_class = 'notif-success';
+    }
+    
+    $unread_class = $notif['is_read'] == 0 ? 'unread' : '';
+    $time_formatted = date("d M, h:i A", strtotime($notif['created_at']));
+    
+    if ($is_dashboard) {
+        // Return formatting for dashboard page lists
+        $style = "";
+        if ($type_class == 'notif-payment') {
+            $style = "border-left: 4px solid #6366f1; background: rgba(99, 102, 241, 0.04);";
+        } elseif ($type_class == 'notif-warning') {
+            $style = "border-left: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.04);";
+        } elseif ($type_class == 'notif-cancel') {
+            $style = "border-left: 4px solid #ef4444; background: rgba(239, 68, 68, 0.04);";
+        } elseif ($type_class == 'notif-success') {
+            $style = "border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.04);";
+        } else {
+            $style = "border-left: 4px solid #64748b; background: rgba(100, 116, 139, 0.04);";
+        }
+        
+        $html = '<div style="' . $style . ' padding: 12px 16px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: left;">';
+        $html .= '  <div>';
+        $html .= '    <div style="font-size: 13.5px; color: var(--dark); font-weight: 500;">' . $msg . '</div>';
+        $html .= '    <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">' . $time_formatted . '</div>';
+        $html .= '  </div>';
+        $html .= '</div>';
+        return $html;
+    } else {
+        // Return formatting for navbar dropdown list
+        $html = '<div class="notif-item ' . $type_class . ' ' . $unread_class . '">';
+        $html .= '  <div class="notif-item-text">' . $msg . '</div>';
+        $html .= '  <div class="notif-item-time">' . $time_formatted . '</div>';
+        $html .= '</div>';
+        return $html;
+    }
+}
 ?>

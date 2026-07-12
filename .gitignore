@@ -1,2 +1,4 @@
 # Ignore private database configuration containing production passwords
 config/db_config.php
+node_modules/
+uploads/

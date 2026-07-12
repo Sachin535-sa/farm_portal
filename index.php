@@ -66,10 +66,10 @@ if (empty($db_crops)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroNava | Direct Agricultural Trade Terminal 🌾</title>
+    <title>AgroNava | Direct Agricultural Trade Terminal <i class='ph-duotone ph-plant'></i></title>
     
     <!-- Design styling system & Google Fonts -->
-    <link rel="stylesheet" href="assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1271,6 +1271,7 @@ if (empty($db_crops)) {
             }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
@@ -1281,25 +1282,27 @@ if (empty($db_crops)) {
         <div class="ambient-orb orb-3"></div>
         
         <!-- Interactive floating sprouts -->
-        <div class="floating-sprout" style="left: 10%; animation-duration: 15s; animation-delay: 0s;">🌱</div>
-        <div class="floating-sprout" style="left: 30%; animation-duration: 18s; animation-delay: 2s;">🌾</div>
-        <div class="floating-sprout" style="left: 55%; animation-duration: 12s; animation-delay: 5s;">🌱</div>
-        <div class="floating-sprout" style="left: 80%; animation-duration: 20s; animation-delay: 1s;">🚜</div>
+        <div class="floating-sprout" style="left: 10%; animation-duration: 15s; animation-delay: 0s;"><i class='ph-duotone ph-leaf'></i></div>
+        <div class="floating-sprout" style="left: 30%; animation-duration: 18s; animation-delay: 2s;"><i class='ph-duotone ph-plant'></i></div>
+        <div class="floating-sprout" style="left: 55%; animation-duration: 12s; animation-delay: 5s;"><i class='ph-duotone ph-leaf'></i></div>
+        <div class="floating-sprout" style="left: 80%; animation-duration: 20s; animation-delay: 1s;"><i class='ph-duotone ph-tractor'></i></div>
     </div>
 
     <!-- Master Header Navigation -->
     <header class="navbar-landing" id="navbar">
         <a href="index.php" class="navbar-brand-landing">
-            <span>🌾</span> Agro<span class="brand-glow">Nava</span>
+            <span><i class='ph-duotone ph-plant'></i></span> Agro<span class="brand-glow">Nava</span>
         </a>
-        
-        <div class="navbar-links">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-links" id="navbar-menu-container">
             <a href="#hero">Direct Terminals</a>
             <a href="#mandi-ticker">Mandi Live Ticker</a>
             <a href="#dual-showcase">Ecosystem Separation</a>
             <a href="#workflow">Direct Journey</a>
             <a href="market_prices.php">MSP Price Indices</a>
-            <a href="admin_complaints.php" style="color: #ef4444; font-weight: 700;">🛡️ Dispute Admin</a>
+            <a href="admin/dashboard.php" style="color: #10b981; font-weight: 700;"><i class='ph-duotone ph-squares-four'></i> Admin Dashboard</a>
         </div>
         
         <div class="nav-actions">
@@ -1307,10 +1310,10 @@ if (empty($db_crops)) {
                 <div style="display: flex; align-items: center; gap: 14px;">
                     <!-- Session customized header node -->
                     <?php if ($role == 'farmer') { ?>
-                        <span class="user-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2);">👨‍🌾 <?php echo htmlspecialchars($name); ?> (Grower)</span>
+                        <span class="user-badge" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2);">👨‍<i class='ph-duotone ph-plant'></i> <?php echo htmlspecialchars($name); ?> (Grower)</span>
                         <a href="farmer/dashboard.php" class="btn btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);">Go to Dashboard</a>
                     <?php } else { ?>
-                        <span class="user-badge" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.2);">🛒 <?php echo htmlspecialchars($name); ?> (Buyer)</span>
+                        <span class="user-badge" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.2);"><i class='ph-duotone ph-shopping-cart'></i> <?php echo htmlspecialchars($name); ?> (Buyer)</span>
                         <a href="buyer/dashboard.php" class="btn btn-primary" style="background: linear-gradient(135deg, #06b6d4, #0891b2); box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);">Go to Terminal</a>
                     <?php } ?>
                     <a href="auth/logout.php" class="btn btn-secondary" style="border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: #94a3b8;">Sign Out</a>
@@ -1327,7 +1330,7 @@ if (empty($db_crops)) {
         <div class="hero-layout">
             <div class="hero-content-main animate-slide">
                 <div class="badge-premium">
-                    <span>🌱</span> Empowering Indian Agriculture
+                    <span><i class='ph-duotone ph-leaf'></i></span> Empowering Indian Agriculture
                 </div>
                 <h1 class="hero-title-main">
                     <span class="gradient-text-1">Direct Sales.</span>
@@ -1342,7 +1345,7 @@ if (empty($db_crops)) {
                     <!-- Farmer Gate -->
                     <a href="<?php echo $is_logged_in ? 'farmer/dashboard.php' : 'auth/login_farmer.php'; ?>" class="gateway-card gateway-card-grower">
                         <div class="gateway-card-header">
-                            <div class="gateway-card-icon">👨‍🌾</div>
+                            <div class="gateway-card-icon">👨‍<i class='ph-duotone ph-plant'></i></div>
                             <span class="gateway-card-badge">Soil to Market</span>
                         </div>
                         <div class="gateway-card-content">
@@ -1357,7 +1360,7 @@ if (empty($db_crops)) {
                     <!-- Buyer Gate -->
                     <a href="<?php echo $is_logged_in ? 'buyer/dashboard.php' : 'auth/login_buyer.php'; ?>" class="gateway-card gateway-card-buyer">
                         <div class="gateway-card-header">
-                            <div class="gateway-card-icon">🛒</div>
+                            <div class="gateway-card-icon"><i class='ph-duotone ph-shopping-cart'></i></div>
                             <span class="gateway-card-badge">Direct Procurement</span>
                         </div>
                         <div class="gateway-card-content">
@@ -1379,14 +1382,14 @@ if (empty($db_crops)) {
                 
                 <!-- Farmer Preview Element -->
                 <div class="hud-floating-badge grower-badge-floating">
-                    <span>🌾</span> Basmati: ₹6,500/Qtl
+                    <span><i class='ph-duotone ph-plant'></i></span> Basmati: ₹6,500/Qtl
                 </div>
                 
                 <!-- Cyber Dashboard Window mockup -->
                 <div class="floating-dashboard-preview">
                     <div class="hud-header-bar">
                         <div class="hud-avatar">
-                            <div class="hud-avatar-circle">🌾</div>
+                            <div class="hud-avatar-circle"><i class='ph-duotone ph-plant'></i></div>
                             <div>
                                 <div class="hud-title">AgroNava Live Trade</div>
                                 <div class="hud-subtitle">Secure Escrow Settle</div>
@@ -1397,7 +1400,7 @@ if (empty($db_crops)) {
                     
                     <div class="hud-row">
                         <div class="hud-row-left">
-                            <span class="hud-row-icon">👨‍🌾</span>
+                            <span class="hud-row-icon">👨‍<i class='ph-duotone ph-plant'></i></span>
                             <span>Grower Rajesh Kumar</span>
                         </div>
                         <span class="hud-row-val">Punjab</span>
@@ -1405,7 +1408,7 @@ if (empty($db_crops)) {
                     
                     <div class="hud-row">
                         <div class="hud-row-left">
-                            <span class="hud-row-icon">📦</span>
+                            <span class="hud-row-icon"><i class='ph-duotone ph-package'></i></span>
                             <span>Basmati Paddy Rice</span>
                         </div>
                         <span class="hud-row-val" style="color: #10b981;">450 kg Left</span>
@@ -1413,20 +1416,20 @@ if (empty($db_crops)) {
                     
                     <div class="hud-row" style="background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.2);">
                         <div class="hud-row-left">
-                            <span class="hud-row-icon" style="color: #06b6d4;">🛡️</span>
+                            <span class="hud-row-icon" style="color: #06b6d4;"><i class='ph-duotone ph-shield-check'></i></span>
                             <span>Distributor Rating</span>
                         </div>
                         <span class="hud-row-val" style="color: #06b6d4;">98 Score</span>
                     </div>
                     
                     <div style="text-align: center; margin-top: 14px; font-size: 11px; color: #64748b;">
-                        🔒 Encrypted Handshake Verification Active
+                        <i class='ph-duotone ph-lock-key'></i> Encrypted Handshake Verification Active
                     </div>
                 </div>
                 
                 <!-- Buyer Preview Element -->
                 <div class="hud-floating-badge buyer-badge-floating">
-                    <span>🚜</span> 100% Middleman-Free
+                    <span><i class='ph-duotone ph-tractor'></i></span> 100% Middleman-Free
                 </div>
             </div>
         </div>
@@ -1442,35 +1445,35 @@ if (empty($db_crops)) {
         <!-- Live scrolling ticker marquee -->
         <div class="marquee-wrapper">
             <div class="marquee-content">
-                <div class="marquee-item">🌾 Wheat (Grade-A): <span style="color: #10b981;">₹2,350/Qtl</span> <span class="ticker-badge">▲ +4.2%</span></div>
+                <div class="marquee-item"><i class='ph-duotone ph-plant'></i> Wheat (Grade-A): <span style="color: #10b981;">₹2,350/Qtl</span> <span class="ticker-badge">▲ +4.2%</span></div>
                 <div class="marquee-item">🍚 Basmati Paddy: <span style="color: #10b981;">₹6,510/Qtl</span> <span class="ticker-badge">▲ +12.8%</span></div>
                 <div class="marquee-item">🥔 Potatoes (Kufri): <span style="color: #ef4444;">₹1,380/Qtl</span> <span class="ticker-badge-down">▼ -1.5%</span></div>
                 <div class="marquee-item">🧅 Red Onions: <span style="color: #10b981;">₹1,950/Qtl</span> <span class="ticker-badge">▲ +3.4%</span></div>
-                <div class="marquee-item">🌱 Sarson Seeds: <span style="color: #10b981;">₹5,400/Qtl</span> <span class="ticker-badge">▲ +6.7%</span></div>
+                <div class="marquee-item"><i class='ph-duotone ph-leaf'></i> Sarson Seeds: <span style="color: #10b981;">₹5,400/Qtl</span> <span class="ticker-badge">▲ +6.7%</span></div>
                 
                 <!-- Duplicate for seamless scroll -->
-                <div class="marquee-item">🌾 Wheat (Grade-A): <span style="color: #10b981;">₹2,350/Qtl</span> <span class="ticker-badge">▲ +4.2%</span></div>
+                <div class="marquee-item"><i class='ph-duotone ph-plant'></i> Wheat (Grade-A): <span style="color: #10b981;">₹2,350/Qtl</span> <span class="ticker-badge">▲ +4.2%</span></div>
                 <div class="marquee-item">🍚 Basmati Paddy: <span style="color: #10b981;">₹6,510/Qtl</span> <span class="ticker-badge">▲ +12.8%</span></div>
                 <div class="marquee-item">🥔 Potatoes (Kufri): <span style="color: #ef4444;">₹1,380/Qtl</span> <span class="ticker-badge-down">▼ -1.5%</span></div>
                 <div class="marquee-item">🧅 Red Onions: <span style="color: #10b981;">₹1,950/Qtl</span> <span class="ticker-badge">▲ +3.4%</span></div>
-                <div class="marquee-item">🌱 Sarson Seeds: <span style="color: #10b981;">₹5,400/Qtl</span> <span class="ticker-badge">▲ +6.7%</span></div>
+                <div class="marquee-item"><i class='ph-duotone ph-leaf'></i> Sarson Seeds: <span style="color: #10b981;">₹5,400/Qtl</span> <span class="ticker-badge">▲ +6.7%</span></div>
             </div>
         </div>
         
         <!-- Dynamic DB Crops Display Grid -->
         <h3 style="font-size: 24px; color: white; margin-bottom: 24px; text-align: left; font-family: 'Outfit', sans-serif;">
-            ⚡ Active Listings in Marketplace
+            <i class='ph-duotone ph-lightning'></i> Active Listings in Marketplace
         </h3>
         
         <div class="crops-grid-landing">
             <?php foreach ($db_crops as $crop) { ?>
                 <div class="crop-card-landing">
                     <span class="crop-card-badge-origin">₹<?php echo htmlspecialchars($crop['price']); ?>/Kg</span>
-                    <span style="font-size: 32px; display: block; margin-bottom: 12px;">🌾</span>
+                    <span style="font-size: 32px; display: block; margin-bottom: 12px;"><i class='ph-duotone ph-plant'></i></span>
                     <h4 class="crop-card-name"><?php echo htmlspecialchars($crop['crop_name']); ?></h4>
                     
                     <div class="crop-card-farmer">
-                        <span>👨‍🌾</span> <?php echo htmlspecialchars($crop['farmer_name']); ?>
+                        <span>👨‍<i class='ph-duotone ph-plant'></i></span> <?php echo htmlspecialchars($crop['farmer_name']); ?>
                         <div style="font-size: 10px; color: #10b981; font-weight: 700; margin-top: 2px;">
                             <?php echo htmlspecialchars($crop['distributor_badge']); ?>
                         </div>
@@ -1506,7 +1509,7 @@ if (empty($db_crops)) {
         
         <div style="text-align: center; margin-top: 40px;">
             <a href="market_prices.php" class="btn btn-secondary" style="border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); color: #fff;">
-                📊 View Live MSP price index comparisons
+                <i class='ph-duotone ph-chart-line-up'></i> View Live MSP price index comparisons
             </a>
         </div>
     </section>
@@ -1604,25 +1607,25 @@ if (empty($db_crops)) {
         
         <div class="timeline-grid">
             <div class="timeline-step step-1">
-                <div class="timeline-bubble">🌾</div>
+                <div class="timeline-bubble"><i class='ph-duotone ph-plant'></i></div>
                 <h4 class="timeline-step-title">1. List Crop & Price</h4>
                 <p class="timeline-step-desc">Farmers list active crops directly. Government MSP benchmarks guide honest pricing structures.</p>
             </div>
             
             <div class="timeline-step step-2">
-                <div class="timeline-bubble">🤝</div>
+                <div class="timeline-bubble"><i class='ph-duotone ph-handshake'></i></div>
                 <h4 class="timeline-step-title">2. Buyer Procurement</h4>
                 <p class="timeline-step-desc">Buyers browse the marketplace and execute orders directly. Zero broker fees incurred.</p>
             </div>
             
             <div class="timeline-step step-3">
-                <div class="timeline-bubble">🔒</div>
+                <div class="timeline-bubble"><i class='ph-duotone ph-lock-key'></i></div>
                 <h4 class="timeline-step-title">3. Escrow Securing</h4>
                 <p class="timeline-step-desc">Funds are stored safely in a digital holding locker, protecting both participating nodes.</p>
             </div>
             
             <div class="timeline-step step-4">
-                <div class="timeline-bubble">📱</div>
+                <div class="timeline-bubble"><i class='ph-duotone ph-device-mobile'></i></div>
                 <h4 class="timeline-step-title">4. Scan QR Deliver</h4>
                 <p class="timeline-step-desc">Buyer scans the grower's dispatch QR code upon arrival. Funds release instantly.</p>
             </div>
@@ -1668,7 +1671,7 @@ if (empty($db_crops)) {
                     "Selling wheat used to mean traveling 40km to the local mandi and paying 8% commission to dalals. With AgroNava, I listed Sharbati Kanak right from my farm. An commercial buyer bought the entire lot within 2 days. The QR payout hit my account instantly!"
                 </p>
                 <div class="testimonial-user">
-                    <div class="testimonial-avatar">🌾</div>
+                    <div class="testimonial-avatar"><i class='ph-duotone ph-plant'></i></div>
                     <div>
                         <div class="testimonial-username">Sardar Gurpreet Singh</div>
                         <div class="testimonial-userrole">Wheat Grower • Patiala, Punjab</div>
@@ -1694,7 +1697,7 @@ if (empty($db_crops)) {
                     "The Live MSP Ticker is a lifesaver. Farmers in my village now know the exact value of Basmati and reject low-ball agent pricing. AgroNava is truly the digital heart of farmer independence."
                 </p>
                 <div class="testimonial-user">
-                    <div class="testimonial-avatar">👨‍🌾</div>
+                    <div class="testimonial-avatar">👨‍<i class='ph-duotone ph-plant'></i></div>
                     <div>
                         <div class="testimonial-username">Rajesh Kumar</div>
                         <div class="testimonial-userrole">Paddy & Potato Farmer • Haryana</div>
@@ -1708,7 +1711,7 @@ if (empty($db_crops)) {
     <footer class="footer-landing">
         <div class="footer-grid">
             <div class="footer-logo-area">
-                <h3>🌾 AgroNava</h3>
+                <h3><i class='ph-duotone ph-plant'></i> AgroNava</h3>
                 <p>Bridging the soil of India directly with transparent, modern trading systems. Safe, rapid, direct.</p>
                 <div style="font-size: 13px; color: #475569;">
                     © 2026 AgroNava Inc. All Rights Reserved.
@@ -1766,5 +1769,7 @@ if (empty($db_crops)) {
             });
         });
     </script>
+    <!-- Scripting integration -->
+    <script src="assets/js/app.js"></script>
 </body>
 </html>

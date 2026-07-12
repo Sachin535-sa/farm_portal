@@ -11,7 +11,7 @@ $name = $is_logged_in ? $_SESSION['name'] : 'System Admin';
 // Handle Action clicks (Approve / Reject)
 if (isset($_POST['resolve_complaint'])) {
     $complaint_id = mysqli_real_escape_string($conn, $_POST['complaint_id']);
-    $action = mysqli_real_escape_string($conn, $_POST['action']); // 'Approved' or 'Rejected'
+    $action = mysqli_real_escape_string($conn, $_POST['admin_action']); // 'Approved' or 'Rejected'
     
     // Fetch complaint and related order details
     $c_sql = "SELECT c.*, o.buyer_id, o.crop_id, cr.crop_name, cr.farmer_id 
@@ -37,10 +37,10 @@ if (isset($_POST['resolve_complaint'])) {
         
         // Send notifications
         if ($action === 'Approved') {
-            $buyer_msg = "🎉 Claim Approved: Your package damage claim for Order #$order_id ($crop_name) has been approved. A refund has been issued.";
+            $buyer_msg = "<i class='ph-duotone ph-party-popper'></i> Claim Approved: Your package damage claim for Order #$order_id ($crop_name) has been approved. A refund has been issued.";
             $farmer_msg = "📢 Dispute Resolved: The damage complaint for Order #$order_id ($crop_name) was approved by admin. A return status has been registered.";
         } else {
-            $buyer_msg = "❌ Claim Rejected: Your package damage claim for Order #$order_id ($crop_name) was rejected by admin after manual review.";
+            $buyer_msg = "<i class='ph-duotone ph-x-circle'></i> Claim Rejected: Your package damage claim for Order #$order_id ($crop_name) was rejected by admin after manual review.";
             $farmer_msg = "📢 Dispute Resolved: The damage complaint for Order #$order_id ($crop_name) was rejected by admin. Payment settlement stands.";
         }
         
@@ -71,7 +71,7 @@ $result = mysqli_query($conn, $sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dispute & Claim Management Center | AgroNava Admin</title>
-    <link rel="stylesheet" href="assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
     <style>
         .admin-nav {
             background: rgba(15, 23, 42, 0.95) !important;
@@ -99,18 +99,22 @@ $result = mysqli_query($conn, $sql);
             border-radius: 50px;
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body style="background-color: #f8fafc;">
 
     <!-- Elite Navbar -->
     <header class="navbar admin-nav">
         <a href="index.php" class="navbar-brand">
-            <span>🛡️</span> AgroNava Admin Panel
+            <span><i class='ph-duotone ph-shield-check'></i></span> AgroNava Admin Panel
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="index.php" style="font-weight: 600;">Main Landing</a>
             <a href="buyer/marketplace.php" style="font-weight: 600;">Marketplace</a>
-            <a href="admin_complaints.php" style="color: var(--primary) !important; font-weight: 700;">Disputes & Claims</a>
+            <a href="admin/dashboard.php" style="color: var(--primary) !important; font-weight: 700;">Dashboard</a>
             <div class="user-badge" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
                 <span>👑</span> System Administrator
             </div>
@@ -120,7 +124,7 @@ $result = mysqli_query($conn, $sql);
     <div class="grid-container animate-fade">
         <div style="margin-bottom: 36px; display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
-                <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 50px; display: inline-block; margin-bottom: 10px;">⚖️ Parcel Claim Center</span>
+                <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 50px; display: inline-block; margin-bottom: 10px;"><i class='ph-duotone ph-scales'></i> Parcel Claim Center</span>
                 <h1 style="font-size: 36px; color: var(--dark); line-height: 1.1;">Package Dispute Resolution Dashboard</h1>
                 <p style="color: var(--text-muted); font-size: 14.5px; margin-top: 4px;">Monitor automated AI parcel damage verifications, compare packaging, and settle crop claims.</p>
             </div>
@@ -128,7 +132,7 @@ $result = mysqli_query($conn, $sql);
 
         <?php if (isset($_GET['success'])): ?>
             <div style="background: var(--success-light); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--primary-hover); padding: 18px; border-radius: var(--radius-md); margin-bottom: 30px; font-weight: 600; display: flex; align-items: center; gap: 12px;" class="animate-slide">
-                <span style="font-size: 24px;">✅</span>
+                <span style="font-size: 24px;"><i class='ph-duotone ph-check-circle'></i></span>
                 <div>
                     <h4 style="color: var(--primary-hover); margin: 0;">Claim Dispute Settled</h4>
                     <p style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin: 0;">Complaint status updated. Real-time notifications and ledger adjustments have been sent to both buyer and farmer.</p>
@@ -158,7 +162,7 @@ $result = mysqli_query($conn, $sql);
                                         ● Dispute Status: <?php echo htmlspecialchars($row['status']); ?>
                                     </span>
                                     <span class="badge" style="background: rgba(79, 70, 229, 0.08); color: #4f46e5; font-weight: 700;">
-                                        🤖 AI Result: <?php echo htmlspecialchars($row['ai_result']); ?>
+                                        <i class='ph-duotone ph-robot'></i> AI Result: <?php echo htmlspecialchars($row['ai_result']); ?>
                                     </span>
                                 </div>
                                 <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">
@@ -167,16 +171,16 @@ $result = mysqli_query($conn, $sql);
                             </div>
 
                             <h3 style="font-size: 24px; color: var(--dark); margin-bottom: 8px;">
-                                🌾 <?php echo htmlspecialchars($row['crop_name']); ?> Claim
+                                <i class='ph-duotone ph-plant'></i> <?php echo htmlspecialchars($row['crop_name']); ?> Claim
                             </h3>
 
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; font-size: 13.5px; background: var(--light-bg); padding: 14px; border-radius: var(--radius-sm);">
                                 <div>
-                                    <span style="color: var(--text-muted); display: block;">🧑‍🌾 Crop Grower</span>
+                                    <span style="color: var(--text-muted); display: block;">🧑‍<i class='ph-duotone ph-plant'></i> Crop Grower</span>
                                     <strong style="color: var(--dark);"><?php echo htmlspecialchars($row['farmer_name']); ?></strong>
                                 </div>
                                 <div>
-                                    <span style="color: var(--text-muted); display: block;">🛒 Buyer Claimant</span>
+                                    <span style="color: var(--text-muted); display: block;"><i class='ph-duotone ph-shopping-cart'></i> Buyer Claimant</span>
                                     <strong style="color: var(--dark);"><?php echo htmlspecialchars($row['buyer_name']); ?></strong>
                                 </div>
                                 <div style="margin-top: 8px;">
@@ -190,7 +194,7 @@ $result = mysqli_query($conn, $sql);
                             </div>
 
                             <div style="margin-bottom: 20px;">
-                                <h4 style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">📝 Claimant's Description</h4>
+                                <h4 style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;"><i class='ph-duotone ph-file-text'></i> Claimant's Description</h4>
                                 <p style="font-size: 14px; color: var(--text-main); line-height: 1.5; font-weight: 500;">
                                     "<?php echo htmlspecialchars($row['reason']); ?>"
                                 </p>
@@ -201,7 +205,7 @@ $result = mysqli_query($conn, $sql);
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                                 <!-- Original Packaging -->
                                 <div>
-                                    <span style="font-size: 11px; font-weight: 700; color: var(--secondary); display: block; margin-bottom: 6px; text-transform: uppercase;">🌱 Grower Packaging Reference</span>
+                                    <span style="font-size: 11px; font-weight: 700; color: var(--secondary); display: block; margin-bottom: 6px; text-transform: uppercase;"><i class='ph-duotone ph-leaf'></i> Grower Packaging Reference</span>
                                     <?php if (!empty($row['original_parcel_image']) && file_exists("uploads/parcels/" . $row['original_parcel_image'])): ?>
                                         <div style="height: 180px; border-radius: var(--radius-sm); border: 1px solid var(--border); background-image: url('uploads/parcels/<?php echo htmlspecialchars($row['original_parcel_image']); ?>'); background-size: cover; background-position: center;"></div>
                                     <?php else: ?>
@@ -227,7 +231,7 @@ $result = mysqli_query($conn, $sql);
                         <!-- AI Gauges and Operations Panel -->
                         <div style="border-left: 1px dashed var(--border); padding-left: 32px; height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                             <div>
-                                <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; color: #4f46e5; background: rgba(79, 70, 229, 0.08); padding: 4px 10px; border-radius: 50px; display: inline-block; margin-bottom: 16px;">🤖 Automated AI Insights</span>
+                                <span style="font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; color: #4f46e5; background: rgba(79, 70, 229, 0.08); padding: 4px 10px; border-radius: 50px; display: inline-block; margin-bottom: 16px;"><i class='ph-duotone ph-robot'></i> Automated AI Insights</span>
                                 
                                 <!-- Damage Score Gauge -->
                                 <div style="margin-bottom: 20px;">
@@ -258,9 +262,9 @@ $result = mysqli_query($conn, $sql);
                                     <strong style="color: #4f46e5; display: block; margin-bottom: 4px;">💡 Recommendation:</strong>
                                     <?php 
                                     if ($row['fake_score'] > 60.0) {
-                                        echo "⚠️ **DISMISS CLAIM**: Highly suspicious correlation discrepancies. Claim photos strongly match reference dimensions but user reports heavy disparity.";
+                                        echo "<i class='ph-duotone ph-warning'></i> **DISMISS CLAIM**: Highly suspicious correlation discrepancies. Claim photos strongly match reference dimensions but user reports heavy disparity.";
                                     } elseif ($row['damage_score'] > 35.0) {
-                                        echo "✅ **APPROVE DISPUTE**: Structural edge disparity is high. Color variations confirm physical distortion of the parcel.";
+                                        echo "<i class='ph-duotone ph-check-circle'></i> **APPROVE DISPUTE**: Structural edge disparity is high. Color variations confirm physical distortion of the parcel.";
                                     } else {
                                         echo "ℹ️ **MANUAL INQUEST**: Mild discrepancies found. Request additional verification before approval.";
                                     }
@@ -271,16 +275,16 @@ $result = mysqli_query($conn, $sql);
                             <!-- Resolution Actions -->
                             <?php if ($c_status === 'pending'): ?>
                                 <div style="margin-top: 32px;">
-                                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 8px;">⚖️ Administrative Decision</span>
+                                    <span style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 8px;"><i class='ph-duotone ph-scales'></i> Administrative Decision</span>
                                     <form action="admin_complaints.php" method="POST" style="display: flex; gap: 14px;">
                                         <input type="hidden" name="complaint_id" value="<?php echo $row['id']; ?>">
-                                        <button type="submit" name="resolve_complaint" value="1" class="btn btn-primary" style="flex: 1; padding: 10px; font-size: 13px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;" onclick="this.form.action.value='Approved';">
-                                            Approve Return
+                                        <button type="submit" name="resolve_complaint" value="1" class="btn btn-primary" style="flex: 1; padding: 10px; font-size: 13px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none;" onclick="this.form.admin_action.value='Approved';">
+                                            <i class='ph-duotone ph-check-circle'></i> Approve Claim
                                         </button>
-                                        <button type="submit" name="resolve_complaint" value="1" class="btn btn-danger" style="flex: 1; padding: 10px; font-size: 13px;" onclick="this.form.action.value='Rejected';">
-                                            Reject Claim
+                                        <button type="submit" name="resolve_complaint" value="1" class="btn btn-danger" style="flex: 1; padding: 10px; font-size: 13px;" onclick="this.form.admin_action.value='Rejected';">
+                                            <i class='ph-duotone ph-x-circle'></i> Reject Fraud
                                         </button>
-                                        <input type="hidden" name="action" value="Approved">
+                                        <input type="hidden" name="admin_action" value="">
                                     </form>
                                 </div>
                             <?php else: ?>
@@ -294,12 +298,14 @@ $result = mysqli_query($conn, $sql);
             </div>
         <?php else: ?>
             <div class="empty-state animate-slide">
-                <div class="empty-state-icon">⚖️</div>
+                <div class="empty-state-icon"><i class='ph-duotone ph-scales'></i></div>
                 <h3 style="font-size: 20px; color: var(--dark); margin-bottom: 8px;">No Disputes Registered</h3>
                 <p style="color: var(--text-muted); max-width: 400px; margin: 0 auto;">Currently, there are no active parcel damage claims or disputes recorded in the platform ledger. Everything is running smoothly!</p>
             </div>
         <?php endif; ?>
     </div>
 
+    <!-- Scripting integration -->
+    <script src="assets/js/app.js"></script>
 </body>
 </html>

@@ -97,7 +97,7 @@ mysqli_stmt_bind_param($stmt, "isssdd", $order_id, $new_img_name, $reason, $ai_r
 
 if (mysqli_stmt_execute($stmt)) {
     // Send Dispute Notification to grower
-    $notif_msg = "⚠️ Dispute Alert: Buyer filed a damage claim for Order #$order_id ($crop_name). AI Analysis: $ai_result ($damage_score% damage, $fake_score% fake risk). Admin review is pending.";
+    $notif_msg = "<i class='ph-duotone ph-warning'></i> Dispute Alert: Buyer filed a damage claim for Order #$order_id ($crop_name). AI Analysis: $ai_result ($damage_score% damage, $fake_score% fake risk). Admin review is pending.";
     $notif_msg_clean = mysqli_real_escape_string($conn, $notif_msg);
     mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$farmer_id', '$notif_msg_clean')");
     

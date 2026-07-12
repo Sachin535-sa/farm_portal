@@ -106,7 +106,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
     <title>Buyer Dashboard Console | AgroNava</title>
     
     <!-- Link styles & Fonts -->
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Chart.js CDN -->
@@ -316,60 +316,90 @@ $bargains_res = mysqli_query($conn, $bargains_query);
             to { opacity: 1; }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
-<body>
+<body class="v2-dashboard">
 
-    <!-- Dynamic Transparent Navigation Bar -->
-    <header class="navbar buyer-navbar">
-        <a href="../index.php" class="navbar-brand">
-            <span style="color: var(--buyer-accent);">🌾</span> AgroNava
-        </a>
-        <div class="navbar-menu">
-            <a href="dashboard.php" style="color: var(--buyer-accent); font-weight: 700;">Dashboard</a>
-            <a href="marketplace.php" style="color: var(--text-muted); font-weight: 600;">Produce Market</a>
-            <a href="my_orders.php" style="color: var(--text-muted); font-weight: 600;">My Orders</a>
-            <a href="../market_prices.php" style="color: var(--text-muted); font-weight: 600;">Live Prices</a>
-            <a href="../chat.php" style="color: var(--text-muted); font-weight: 600;">Chat Terminal</a>
-            
-            <!-- Glowing Notification Bell -->
-            <div class="notif-bell-container" id="notif-bell-btn">
-                <span class="notif-bell-icon">🔔</span>
+    <!-- V2 Sidebar -->
+    <aside class="v2-sidebar" id="v2Sidebar">
+        <div class="v2-sidebar-header">
+            <a href="../index.php" class="brand">
+                <span style="color: var(--v2-primary);"><i class="ph-duotone ph-plant"></i></span> AgroNava
+            </a>
+        </div>
+        <div class="v2-sidebar-nav">
+            <a href="dashboard.php" class="v2-nav-item active"><i class="ph-duotone ph-squares-four"></i> Dashboard</a>
+            <a href="marketplace.php" class="v2-nav-item"><i class="ph-duotone ph-shopping-bag"></i> Marketplace</a>
+            <a href="my_orders.php" class="v2-nav-item"><i class="ph-duotone ph-package"></i> Orders</a>
+            <a href="../market_prices.php" class="v2-nav-item"><i class="ph-duotone ph-chart-line-up"></i> Live Prices</a>
+            <a href="../chat.php" class="v2-nav-item"><i class="ph-duotone ph-chat-circle"></i> Chat</a>
+        </div>
+        <div class="v2-sidebar-footer">
+            <a href="../auth/logout.php" class="v2-nav-item" style="color: #ef4444;"><i class="ph-duotone ph-sign-out"></i> Logout</a>
+        </div>
+    </aside>
+
+    <!-- V2 Top Navbar -->
+    <header class="v2-top-navbar">
+        <div class="v2-nav-left">
+            <button class="v2-mobile-toggle" id="v2MobileToggle" aria-label="Toggle Menu">
+                <i class="ph-duotone ph-list"></i>
+            </button>
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 18px; margin: 0; color: var(--v2-text-main);">Buyer Console</h2>
+        </div>
+        <div class="v2-nav-right">
+            <div class="v2-icon-btn" id="v2NotifToggle">
+                <i class="ph-duotone ph-bell"></i>
                 <?php if ($unread_count > 0): ?>
-                    <span class="notif-badge"><?php echo $unread_count; ?></span>
+                    <span class="v2-badge"><?php echo $unread_count; ?></span>
                 <?php endif; ?>
-                
-                <div class="notif-dropdown" id="notif-dropdown-menu">
-                    <div class="notif-dropdown-header">
-                        <span>Alerts Inbox</span>
-                    </div>
-                    <div class="notif-dropdown-body">
-                        <?php 
-                        if ($notif_res && mysqli_num_rows($notif_res) > 0) {
-                            while ($notif = mysqli_fetch_assoc($notif_res)) {
-                                $unread_class = $notif['is_read'] == 0 ? 'unread' : '';
-                                echo '<div class="notif-item ' . $unread_class . '">';
-                                echo '<div class="notif-item-text">' . htmlspecialchars($notif['message']) . '</div>';
-                                echo '<div class="notif-item-time">' . date("d M, h:i A", strtotime($notif['created_at'])) . '</div>';
-                                echo '</div>';
-                            }
-                        } else {
-                            echo '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No alerts.</div>';
-                        }
-                        ?>
-                    </div>
-                </div>
             </div>
-
-            <div class="user-badge buyer-badge-glow">
-                <span>🛒</span> <?php echo htmlspecialchars($buyer_name); ?>
+            <div class="user-badge" style="background: rgba(16, 185, 129, 0.1); color: var(--v2-primary); border: 1px solid rgba(16, 185, 129, 0.2); padding: 6px 12px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                <i class="ph-duotone ph-shopping-cart"></i> <?php echo htmlspecialchars($buyer_name); ?>
             </div>
-            <a class="btn btn-danger" style="padding: 8px 16px; font-size: 13px;" href="../auth/logout.php">Logout</a>
         </div>
     </header>
 
-    <!-- Main Container -->
-    <div class="grid-container animate-fade">
-        
+    <!-- V2 Notification Drawer -->
+    <div class="v2-drawer-overlay" id="v2DrawerOverlay"></div>
+    <div class="v2-notification-drawer" id="v2NotifDrawer">
+        <div class="v2-drawer-header">
+            <h3>Alerts Inbox</h3>
+            <button class="v2-icon-btn" id="v2NotifClose" style="border: none;"><i class="ph-duotone ph-x"></i></button>
+        </div>
+        <div class="v2-drawer-body">
+            <?php 
+            if ($notif_res && mysqli_num_rows($notif_res) > 0) {
+                while ($notif = mysqli_fetch_assoc($notif_res)) {
+                    $unread_class = $notif['is_read'] == 0 ? 'unread' : '';
+                    $msg = $notif['message'];
+                    
+                    $type_class = '';
+                    if (stripos($msg, 'Payment Escrowed') !== false || stripos($msg, 'Payment Settled') !== false || stripos($msg, 'Escrowed') !== false || stripos($msg, 'Payment Verified') !== false) {
+                        $type_class = 'notif-payment';
+                    } elseif (stripos($msg, 'Warning') !== false || stripos($msg, 'Low Stock') !== false || stripos($msg, 'Suspicious') !== false) {
+                        $type_class = 'notif-warning';
+                    } elseif (stripos($msg, 'cancelled') !== false || stripos($msg, 'cancel') !== false) {
+                        $type_class = 'notif-cancel';
+                    } elseif (stripos($msg, 'Trade Finalized') !== false || stripos($msg, 'Successful') !== false || stripos($msg, 'successfully') !== false || stripos($msg, 'Verified') !== false) {
+                        $type_class = 'notif-success';
+                    }
+                    
+                    echo '<div class="v2-notif-card ' . $unread_class . ' ' . $type_class . '">';
+                    echo '<div style="font-size: 14px; margin-bottom: 6px; line-height: 1.4;">' . $msg . '</div>';
+                    echo '<div style="font-size: 12px; color: var(--v2-text-muted);"><i class="ph-duotone ph-clock"></i> ' . date("d M, h:i A", strtotime($notif['created_at'])) . '</div>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<div style="padding: 20px; text-align: center; color: var(--v2-text-muted); font-size: 14px;">No alerts.</div>';
+            }
+            ?>
+        </div>
+    </div>
+
+    <!-- V2 Main Content -->
+    <main class="v2-main-content">
+        <div class="animate-fade">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
             <div>
                 <h1 style="font-size: 32px; color: var(--buyer-slate); font-family: 'Outfit', sans-serif; font-weight: 800;">Buyer Console Terminal</h1>
@@ -382,7 +412,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-bottom: 40px;">
             <!-- Spending -->
             <div class="buyer-stat-card">
-                <div class="buyer-stat-icon">💰</div>
+                <div class="buyer-stat-icon"><i class="ph-duotone ph-currency-circle-dollar"></i></div>
                 <div>
                     <div class="buyer-stat-val">₹<?php echo number_format($total_spent); ?></div>
                     <div class="buyer-stat-label">Total Procured spent</div>
@@ -390,7 +420,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
             </div>
             <!-- Active Orders -->
             <div class="buyer-stat-card">
-                <div class="buyer-stat-icon" style="color: var(--buyer-indigo); background: rgba(79, 70, 229, 0.08);">📦</div>
+                <div class="buyer-stat-icon" style="color: var(--buyer-indigo); background: rgba(79, 70, 229, 0.08);"><i class="ph-duotone ph-package"></i></div>
                 <div>
                     <div class="buyer-stat-val"><?php echo $active_orders_count; ?></div>
                     <div class="buyer-stat-label">Active Cargo Orders</div>
@@ -398,7 +428,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
             </div>
             <!-- Escrow holdings -->
             <div class="buyer-stat-card">
-                <div class="buyer-stat-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.08);">🔒</div>
+                <div class="buyer-stat-icon" style="color: #f59e0b; background: rgba(245, 158, 11, 0.08);"><i class="ph-duotone ph-lock-key"></i></div>
                 <div>
                     <div class="buyer-stat-val">₹<?php echo number_format($pending_escrow); ?></div>
                     <div class="buyer-stat-label">Pending Settlements</div>
@@ -406,7 +436,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
             </div>
             <!-- Volume Sourced -->
             <div class="buyer-stat-card">
-                <div class="buyer-stat-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.08);">⚖️</div>
+                <div class="buyer-stat-icon" style="color: #10b981; background: rgba(16, 185, 129, 0.08);"><i class="ph-duotone ph-scales"></i></div>
                 <div>
                     <div class="buyer-stat-val"><?php echo number_format($total_volume); ?> Kg</div>
                     <div class="buyer-stat-label">Total Volume Procured</div>
@@ -418,7 +448,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
         <div class="analytics-section-grid" style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; margin-bottom: 40px;">
             <!-- Chart Card 1 -->
             <div class="analytics-chart-card" style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;">
-                <h3 style="font-size: 18px; color: var(--buyer-slate); margin-bottom: 8px;">📊 Spend Distribution per Crop Category</h3>
+                <h3 style="font-size: 18px; color: var(--buyer-slate); margin-bottom: 8px;"><i class="ph-duotone ph-chart-line-up"></i> Spend Distribution per Crop Category</h3>
                 <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Visual representation of total spending metrics verified directly through direct trade settlements.</p>
                 <div style="height: 280px; position: relative;">
                     <canvas id="spendingChart"></canvas>
@@ -427,7 +457,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
             
             <!-- Chart Card 2 -->
             <div class="analytics-chart-card" style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;">
-                <h3 style="font-size: 18px; color: var(--buyer-slate); margin-bottom: 8px;">📈 Logistics Fulfillment Pipeline</h3>
+                <h3 style="font-size: 18px; color: var(--buyer-slate); margin-bottom: 8px;"><i class="ph-duotone ph-trend-up"></i> Logistics Fulfillment Pipeline</h3>
                 <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Ongoing progress allocations of cargo transactions.</p>
                 <div style="height: 220px; position: relative; display: flex; justify-content: center; align-items: center;">
                     <canvas id="logisticsChart"></canvas>
@@ -436,7 +466,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
                 <!-- Eco badges indicator score -->
                 <div class="eco-progress-container">
                     <div class="eco-progress-header">
-                        <span>🌱 Sustainable Sourced Score</span>
+                        <span><i class="ph-duotone ph-leaf"></i> Sustainable Sourced Score</span>
                         <span style="color: #10b981;">85% Elite</span>
                     </div>
                     <div class="eco-bar">
@@ -454,7 +484,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
             <!-- Active Timeline Transactions -->
             <div class="glass-card" style="background: white; border: 1px solid var(--border); padding: 24px; border-radius: var(--radius-md);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-                    <h3 style="font-size: 18px; color: var(--buyer-slate);">🚚 Ongoing Cargo Timelines</h3>
+                    <h3 style="font-size: 18px; color: var(--buyer-slate);"><i class="ph-duotone ph-truck"></i> Ongoing Cargo Timelines</h3>
                     <a href="my_orders.php" style="color: var(--buyer-accent); font-weight: 700; font-size: 13px;">Manage All Orders ➔</a>
                 </div>
                 
@@ -487,14 +517,14 @@ $bargains_res = mysqli_query($conn, $bargains_query);
                                 <div style="text-align: right;">
                                     <div style="font-size: 15px; font-weight: 800; color: var(--buyer-slate);">₹<?php echo number_format($cost); ?></div>
                                     <span class="user-badge" style="font-size: 10px; padding: 2px 8px; margin-top: 4px; display: inline-block; background: <?php echo $order['is_paid'] ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)'; ?>; color: <?php echo $order['is_paid'] ? '#10b981' : '#f59e0b'; ?>;">
-                                        <?php echo $order['is_paid'] ? '💳 Paid & Settled' : '⚠️ Pending Settlement'; ?>
+                                        <?php echo $order['is_paid'] ? '<i class="ph-duotone ph-credit-card"></i> Paid & Settled' : '<i class="ph-duotone ph-warning"></i> Pending Settlement'; ?>
                                     </span>
                                 </div>
                             </div>
                             
                             <?php if ($status == 'cancelled') { ?>
                                 <div style="color: var(--danger); font-weight: 700; font-size: 13px; padding: 10px 0; display: flex; align-items: center; gap: 8px;">
-                                    ❌ This order has been cancelled and funds reverted.
+                                    <i class="ph-duotone ph-x-circle"></i> This order has been cancelled and funds reverted.
                                 </div>
                             <?php } else { ?>
                                 <!-- Five-Stage Timeline -->
@@ -551,7 +581,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
                             <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                                 <h4 style="font-size: 14px; color: var(--buyer-slate); font-weight: 700;"><?php echo htmlspecialchars($bargain['crop_name']); ?></h4>
                                 <span class="user-badge" style="font-size: 10px; padding: 2px 8px; background: <?php echo $is_accepted ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)'; ?>; color: <?php echo $is_accepted ? '#10b981' : '#f59e0b'; ?>;">
-                                    <?php echo $is_accepted ? '🎉 Accepted' : '⏳ Pending Response'; ?>
+                                    <?php echo $is_accepted ? '<i class="ph-duotone ph-party-popper"></i> Accepted' : '<i class="ph-duotone ph-hourglass-high"></i> Pending Response'; ?>
                                 </span>
                             </div>
                             
@@ -566,7 +596,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
                             
                             <?php if ($is_accepted) { ?>
                                 <a href="marketplace.php" class="btn btn-primary" style="width: 100%; font-size: 12px; padding: 8px; margin-top: 14px; background: #10b981; color: white; border: none; text-align: center; display: block; border-radius: 6px;">
-                                    🛒 Checkout with Accepted Price
+                                    <i class="ph-duotone ph-shopping-cart"></i> Checkout with Accepted Price
                                 </a>
                             <?php } ?>
                         </div>
@@ -583,10 +613,32 @@ $bargains_res = mysqli_query($conn, $bargains_query);
     <!-- Active Chart Rendering JavaScript -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Global Chart Defaults for Premium Look
+            Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+            Chart.defaults.color = "#64748b";
+            Chart.defaults.scale.grid.color = "rgba(0,0,0,0.03)";
+            Chart.defaults.plugins.tooltip.animation.duration = 400;
+            
+            const premiumTooltip = {
+                backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                titleFont: { size: 14, family: "'Plus Jakarta Sans', sans-serif", weight: 'bold' },
+                bodyFont: { size: 13, family: "'Plus Jakarta Sans', sans-serif" },
+                padding: 16,
+                cornerRadius: 12,
+                displayColors: true,
+                boxPadding: 6,
+                borderColor: 'rgba(255,255,255,0.1)',
+                borderWidth: 1
+            };
+
             // Chart 1: Spending distribution
             const ctx1 = document.getElementById('spendingChart').getContext('2d');
             const spendingLabels = <?php echo json_encode(array_column($spending_data, 'label')); ?>;
             const spendingValues = <?php echo json_encode(array_column($spending_data, 'value')); ?>;
+            
+            let buyerBarGradient = ctx1.createLinearGradient(0, 0, 0, 350);
+            buyerBarGradient.addColorStop(0, 'rgba(6, 182, 212, 0.9)');
+            buyerBarGradient.addColorStop(1, 'rgba(6, 182, 212, 0.1)');
             
             new Chart(ctx1, {
                 type: 'bar',
@@ -595,10 +647,14 @@ $bargains_res = mysqli_query($conn, $bargains_query);
                     datasets: [{
                         label: 'Procured Volume Cost (₹)',
                         data: spendingValues,
-                        backgroundColor: 'rgba(6, 182, 212, 0.7)',
+                        backgroundColor: buyerBarGradient,
                         borderColor: '#06b6d4',
                         borderWidth: 2,
-                        borderRadius: 8
+                        borderRadius: 8,
+                        barThickness: 28,
+                        hoverBackgroundColor: '#06b6d4',
+                        hoverBorderColor: '#fff',
+                        hoverBorderWidth: 2
                     }]
                 },
                 options: {
@@ -607,14 +663,20 @@ $bargains_res = mysqli_query($conn, $bargains_query);
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: { color: '#f1f5f9' }
+                            grid: { drawBorder: false },
+                            ticks: { font: { family: "'Plus Jakarta Sans'" } }
                         },
                         x: {
-                            grid: { display: false }
+                            grid: { display: false, drawBorder: false },
+                            ticks: { font: { family: "'Plus Jakarta Sans'", weight: '600' } }
                         }
                     },
                     plugins: {
-                        legend: { display: false }
+                        legend: { display: false },
+                        tooltip: premiumTooltip
+                    },
+                    animation: {
+                        y: { duration: 1200, easing: 'easeOutQuart' }
                     }
                 }
             });
@@ -634,21 +696,24 @@ $bargains_res = mysqli_query($conn, $bargains_query);
                             '#818cf8',
                             '#fbbf24',
                             '#38bdf8',
-                            '#34d399',
-                            '#f87171'
+                            '#10b981',
+                            '#ef4444'
                         ],
                         borderWidth: 3,
-                        borderColor: '#ffffff'
+                        borderColor: '#ffffff',
+                        hoverOffset: 4
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '70%',
                     plugins: {
+                        tooltip: premiumTooltip,
                         legend: {
-                            position: 'right',
+                            position: window.innerWidth < 1200 ? 'bottom' : 'right',
                             labels: {
-                                font: { size: 11, family: 'Inter' },
+                                font: { size: 12, family: "'Plus Jakarta Sans'" },
                                 boxWidth: 12
                             }
                         }
@@ -657,5 +722,44 @@ $bargains_res = mysqli_query($conn, $bargains_query);
             });
         });
     </script>
+    </script>
+    <!-- Scripting integration -->
+    <script src="../assets/js/app.js"></script>
+
+    <!-- V2 UI Mechanics JS -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const notifToggle = document.getElementById("v2NotifToggle");
+            const notifDrawer = document.getElementById("v2NotifDrawer");
+            const notifClose = document.getElementById("v2NotifClose");
+            const drawerOverlay = document.getElementById("v2DrawerOverlay");
+            const mobileToggle = document.getElementById("v2MobileToggle");
+            const sidebar = document.getElementById("v2Sidebar");
+
+            function toggleDrawer() {
+                if(notifDrawer) notifDrawer.classList.toggle("active");
+                if(drawerOverlay) drawerOverlay.classList.toggle("active");
+            }
+
+            if(notifToggle) notifToggle.addEventListener("click", toggleDrawer);
+            if(notifClose) notifClose.addEventListener("click", toggleDrawer);
+            if(drawerOverlay) {
+                drawerOverlay.addEventListener("click", () => {
+                    notifDrawer.classList.remove("active");
+                    drawerOverlay.classList.remove("active");
+                    if(sidebar) sidebar.classList.remove("mobile-open");
+                });
+            }
+
+            if(mobileToggle && sidebar) {
+                mobileToggle.addEventListener("click", () => {
+                    sidebar.classList.toggle("mobile-open");
+                    drawerOverlay.classList.toggle("active");
+                });
+            }
+        });
+    </script>
+        </div>
+    </main>
 </body>
 </html>

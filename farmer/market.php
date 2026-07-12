@@ -297,8 +297,57 @@ if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'farmer') {
         @media(max-width: 900px) {
             .metrics-grid { grid-template-columns: 1fr; }
             table { display: block; overflow-x: auto; white-space: nowrap; }
+            .page-header { flex-direction: column; text-align: center; gap: 12px; }
+        }
+        
+        /* Mobile navbar responsive overrides */
+        .navbar-toggle { display: none; }
+        
+        @media(max-width: 768px) {
+            .navbar {
+                flex-wrap: wrap;
+                padding: 12px 20px;
+            }
+            .navbar-toggle {
+                display: block;
+                background: none;
+                border: 1px solid rgba(34, 197, 94, 0.2);
+                border-radius: 8px;
+                padding: 6px 10px;
+                font-size: 20px;
+                cursor: pointer;
+                color: var(--green-deep);
+            }
+            .navbar-menu {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 12px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(34, 197, 94, 0.15);
+            }
+            .navbar-menu.active {
+                display: flex;
+            }
+            .navbar-menu a {
+                display: block;
+                padding: 10px 16px;
+                background: rgba(34, 197, 94, 0.04);
+                border-radius: 8px;
+                font-weight: 600;
+                font-size: 13px;
+            }
+            .market-container {
+                margin: 20px auto;
+                padding: 0 16px;
+            }
+            .chart-container {
+                overflow-x: auto;
+            }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
@@ -308,8 +357,11 @@ if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'farmer') {
     <div class="orb-light orb-2-light"></div>
 
     <nav class="navbar">
-        <a href="dashboard.php" class="nav-brand"><span>🌾</span> AgroNava</a>
-        <div class="nav-links">
+        <a href="dashboard.php" class="navbar-brand"><span><i class='ph-duotone ph-plant'></i></span> AgroNava</a>
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="dashboard.php">Dashboard</a>
             <a href="add_crop.php">List Harvest</a>
             <a href="market.php" class="active">Market Intel</a>
@@ -366,7 +418,7 @@ if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'farmer') {
                 <tbody>
                     <tr>
                         <td>
-                            <div class="crop-name"><div class="crop-icon">🌾</div> Wheat (Premium)</div>
+                            <div class="crop-name"><div class="crop-icon"><i class='ph-duotone ph-plant'></i></div> Wheat (Premium)</div>
                         </td>
                         <td><span class="price-bad">₹20.00 /kg</span></td>
                         <td><span class="price-bad">₹22.50 /kg</span></td>
@@ -431,5 +483,7 @@ if(!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'farmer') {
 
     </div>
 
+    <!-- Scripting integration -->
+    <script src="../assets/js/app.js"></script>
 </body>
 </html>

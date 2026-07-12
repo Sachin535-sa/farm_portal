@@ -208,11 +208,7 @@ $result_trending = mysqli_query($conn, $sql_trending);
                         <?php 
                         if ($notif_res && mysqli_num_rows($notif_res) > 0) {
                             while ($notif = mysqli_fetch_assoc($notif_res)) {
-                                $unread_class = $notif['is_read'] == 0 ? 'unread' : '';
-                                echo '<div class="notif-item ' . $unread_class . '">';
-                                echo '<div class="notif-item-text">' . htmlspecialchars($notif['message']) . '</div>';
-                                echo '<div class="notif-item-time">' . date("d M, h:i A", strtotime($notif['created_at'])) . '</div>';
-                                echo '</div>';
+                                echo get_notification_html($notif);
                             }
                         } else {
                             echo '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No new alerts.</div>';
@@ -704,8 +700,8 @@ $result_trending = mysqli_query($conn, $sql_trending);
                 <button class="close-btn">&times;</button>
             </div>
             
-            <form action="place_order.php" method="POST">
-                
+            <form action="place_order.php" method="POST" id="checkoutForm" onsubmit="return handleCheckoutSubmit(this);">
+                <input type="hidden" name="place_order" value="1">
                 <input type="hidden" id="modal-crop-id" name="crop_id">
                 
                 <div class="form-group" style="background: var(--light-bg); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 20px;">
@@ -740,8 +736,8 @@ $result_trending = mysqli_query($conn, $sql_trending);
                     <button type="button" class="btn btn-secondary close-btn" style="flex: 1; justify-content: center;">
                         Cancel
                     </button>
-                    <button type="submit" name="place_order" class="btn btn-primary" style="flex: 1.5; justify-content: center;">
-                        Confirm Purchase 🤝
+                    <button type="submit" id="confirmPurchaseBtn" name="place_order" class="btn btn-primary" style="flex: 1.5; justify-content: center;">
+                        <span id="btn-text">Confirm Purchase 🤝</span>
                     </button>
                 </div>
                 
@@ -762,6 +758,21 @@ $result_trending = mysqli_query($conn, $sql_trending);
             // Toggle this one
             panel.style.display = isOpen ? 'none' : 'block';
             btn.textContent = isOpen ? '📱 Scan QR to Order Instantly' : '✖ Close QR';
+        }
+
+        // Checkout loading state and double click prevention
+        function handleCheckoutSubmit(form) {
+            const btn = document.getElementById('confirmPurchaseBtn');
+            const text = document.getElementById('btn-text');
+            
+            if (btn.disabled) return false; // prevent double submit
+            
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            btn.style.cursor = 'not-allowed';
+            text.innerHTML = '<i class="ph-duotone ph-spinner animate-spin"></i> Processing...';
+            
+            return true;
         }
     </script>
 </body>

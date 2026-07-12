@@ -79,19 +79,19 @@ if (isset($_POST['send_message'])) {
             // === PRICE / BARGAIN KEYWORDS ===
             if (preg_match('/\b(price|cost|rate|charge|expensive|cheap|₹|rs|rupee|amount|quote|offer|bargain|negotiate|deal|discount|reduce|low|high|afford)\b/', $msg_lower)) {
                 $replies = [
-                    "🤝 Namaste Ji! Thank you for your interest. Our listed price of ₹{$crop_price}/kg reflects the premium quality of our {$crop_name}. However, for bulk orders we are open to negotiation — please use the 'Propose Offer' panel above to submit your price!",
-                    "💰 We understand your concern about pricing. For orders above 100kg, we can discuss a special rate. Please submit your proposed price using the bargain tool and we will review it immediately!",
-                    "🌾 Our {$crop_name} is priced at ₹{$crop_price}/kg — this includes farm-fresh quality assurance. We are open to reasonable offers. Use the bargain panel to make a formal proposal!",
-                    "✅ We appreciate your interest! For a fair deal, please submit your target price using the Propose Offer tool. We review all offers within the same day!"
+                    "<i class='ph-duotone ph-handshake'></i> Namaste Ji! Thank you for your interest. Our listed price of ₹{$crop_price}/kg reflects the premium quality of our {$crop_name}. However, for bulk orders we are open to negotiation — please use the 'Propose Offer' panel above to submit your price!",
+                    "<i class='ph-duotone ph-currency-circle-dollar'></i> We understand your concern about pricing. For orders above 100kg, we can discuss a special rate. Please submit your proposed price using the bargain tool and we will review it immediately!",
+                    "<i class='ph-duotone ph-plant'></i> Our {$crop_name} is priced at ₹{$crop_price}/kg — this includes farm-fresh quality assurance. We are open to reasonable offers. Use the bargain panel to make a formal proposal!",
+                    "<i class='ph-duotone ph-check-circle'></i> We appreciate your interest! For a fair deal, please submit your target price using the Propose Offer tool. We review all offers within the same day!"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
 
             // === ACCEPT / SATISFIED / AGREE KEYWORDS ===
             } elseif (preg_match('/\b(ok|okay|agree|accept|satisfied|deal|done|perfect|fine|sure|alright|yes|haan|theek|chalega|chalte)\b/', $msg_lower)) {
                 $replies = [
-                    "🎉 Excellent! We are delighted to do business with you! Please proceed to place your order from the marketplace. We will ensure timely dispatch of your {$crop_name}!",
-                    "✅ Great news! We are satisfied and ready to fulfil your order. Kindly place the order through the marketplace — we will prioritize your delivery!",
-                    "🤝 Deal confirmed! It's a pleasure doing business with you on AgroNava. Please go ahead and place the order — we will ensure top quality packaging and fast dispatch!",
+                    "<i class='ph-duotone ph-party-popper'></i> Excellent! We are delighted to do business with you! Please proceed to place your order from the marketplace. We will ensure timely dispatch of your {$crop_name}!",
+                    "<i class='ph-duotone ph-check-circle'></i> Great news! We are satisfied and ready to fulfil your order. Kindly place the order through the marketplace — we will prioritize your delivery!",
+                    "<i class='ph-duotone ph-handshake'></i> Deal confirmed! It's a pleasure doing business with you on AgroNava. Please go ahead and place the order — we will ensure top quality packaging and fast dispatch!",
                     "🌟 Wonderful! Let's do business! Your {$crop_name} order will be prepared fresh after you place it from the marketplace. Thank you for choosing us!"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
@@ -99,8 +99,8 @@ if (isset($_POST['send_message'])) {
             // === DELIVERY / SHIPPING KEYWORDS ===
             } elseif (preg_match('/\b(deliver|delivery|ship|shipping|transport|logistics|arrival|dispatch|send|receive|time|days|when|how long|location|address)\b/', $msg_lower)) {
                 $replies = [
-                    "🚚 We typically dispatch within 24-48 hours of order confirmation. Delivery to most districts takes 2-4 business days. For your location, we can arrange direct farm-to-door service!",
-                    "📦 Our standard delivery timeline is 2-3 business days after payment confirmation. We partner with reliable logistics providers to ensure your {$crop_name} arrives fresh!",
+                    "<i class='ph-duotone ph-truck'></i> We typically dispatch within 24-48 hours of order confirmation. Delivery to most districts takes 2-4 business days. For your location, we can arrange direct farm-to-door service!",
+                    "<i class='ph-duotone ph-package'></i> Our standard delivery timeline is 2-3 business days after payment confirmation. We partner with reliable logistics providers to ensure your {$crop_name} arrives fresh!",
                     "🗓️ We process all orders on the same day if placed before 2 PM. Dispatch happens the following morning with full tracking updates sent to your registered mobile!",
                     "🚛 Delivery is available across all major districts. For bulk orders above 200kg, we offer free farm pickup as well. Please share your delivery PIN code for an accurate ETA!"
                 ];
@@ -109,9 +109,9 @@ if (isset($_POST['send_message'])) {
             // === QUALITY / ORGANIC / FRESH KEYWORDS ===
             } elseif (preg_match('/\b(quality|fresh|organic|natural|pesticide|chemical|grade|certified|pure|clean|test|safe|standard|guarantee|genuine)\b/', $msg_lower)) {
                 $replies = [
-                    "🌱 Our {$crop_name} is 100% naturally grown using traditional farming practices. We follow all APMC quality standards and our produce is regularly tested for pesticide residues.",
-                    "✅ Quality is our top priority! All our crops are harvested at peak freshness and immediately sorted into Grade-A lots. We can provide quality certificates on request!",
-                    "🌾 Our farm follows sustainable and eco-friendly practices. The {$crop_name} you see listed is from the latest harvest — absolutely fresh, no cold storage involved!",
+                    "<i class='ph-duotone ph-leaf'></i> Our {$crop_name} is 100% naturally grown using traditional farming practices. We follow all APMC quality standards and our produce is regularly tested for pesticide residues.",
+                    "<i class='ph-duotone ph-check-circle'></i> Quality is our top priority! All our crops are harvested at peak freshness and immediately sorted into Grade-A lots. We can provide quality certificates on request!",
+                    "<i class='ph-duotone ph-plant'></i> Our farm follows sustainable and eco-friendly practices. The {$crop_name} you see listed is from the latest harvest — absolutely fresh, no cold storage involved!",
                     "🏆 We take pride in our produce quality. Each batch goes through manual sorting, cleaning, and packaging before dispatch. Customer satisfaction is our biggest reward!"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
@@ -119,9 +119,9 @@ if (isset($_POST['send_message'])) {
             // === QUANTITY / BULK / STOCK KEYWORDS ===
             } elseif (preg_match('/\b(quantity|kg|kilo|ton|tonne|quintal|stock|available|bulk|order|how much|minimum|maximum|lot|load)\b/', $msg_lower)) {
                 $replies = [
-                    "📦 We currently have good stock available of {$crop_name}. Minimum order is 10kg and we can fulfil bulk orders up to our listed quantity. What quantity are you looking for?",
-                    "🌾 Our current {$crop_name} stock is fresh and ready for dispatch. For bulk orders above 50kg, we offer priority processing and can negotiate on pricing!",
-                    "✅ We can accommodate your quantity requirements. Please let us know your exact requirement and we will confirm availability and dispatch timeline immediately!",
+                    "<i class='ph-duotone ph-package'></i> We currently have good stock available of {$crop_name}. Minimum order is 10kg and we can fulfil bulk orders up to our listed quantity. What quantity are you looking for?",
+                    "<i class='ph-duotone ph-plant'></i> Our current {$crop_name} stock is fresh and ready for dispatch. For bulk orders above 50kg, we offer priority processing and can negotiate on pricing!",
+                    "<i class='ph-duotone ph-check-circle'></i> We can accommodate your quantity requirements. Please let us know your exact requirement and we will confirm availability and dispatch timeline immediately!",
                     "💼 For commercial or wholesale quantities, please mention your requirement and we will provide a customized quotation with volume-based pricing!"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
@@ -129,10 +129,10 @@ if (isset($_POST['send_message'])) {
             // === PAYMENT / UPI / TERMS KEYWORDS ===
             } elseif (preg_match('/\b(payment|pay|upi|online|cash|advance|credit|cod|terms|invoice|receipt|bill|bank|transfer|neft|rtgs|gpay|phonepe|paytm)\b/', $msg_lower)) {
                 $replies = [
-                    "💳 We accept UPI, bank transfer (NEFT/RTGS), and online payment through the AgroNava platform. Full payment is required before dispatch for security.",
+                    "<i class='ph-duotone ph-credit-card'></i> We accept UPI, bank transfer (NEFT/RTGS), and online payment through the AgroNava platform. Full payment is required before dispatch for security.",
                     "🏦 Our preferred payment mode is UPI or bank transfer. Once your order is placed on the platform, payment instructions will be shared automatically.",
-                    "✅ Payment is fully secured through AgroNava's platform. We generate a proper invoice after every successful transaction for your records.",
-                    "💰 We offer flexible payment terms for long-term buyers. For your first order, advance payment is required. Subsequent orders can have net-7 day credit terms!"
+                    "<i class='ph-duotone ph-check-circle'></i> Payment is fully secured through AgroNava's platform. We generate a proper invoice after every successful transaction for your records.",
+                    "<i class='ph-duotone ph-currency-circle-dollar'></i> We offer flexible payment terms for long-term buyers. For your first order, advance payment is required. Subsequent orders can have net-7 day credit terms!"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
 
@@ -141,7 +141,7 @@ if (isset($_POST['send_message'])) {
                 $replies = [
                     "🙏 Namaste Ji! Welcome to my listing on AgroNava. I am delighted to connect with you! I have fresh {$crop_name} available at ₹{$crop_price}/kg. How can I assist you today?",
                     "👋 Hello! Thank you for reaching out. I am a verified AgroNava farmer and I have quality {$crop_name} ready for sale. Please feel free to ask anything!",
-                    "🌾 Sat Sri Akal / Namaste! Great to hear from you. I am here to assist you with your {$crop_name} procurement. What would you like to know?"
+                    "<i class='ph-duotone ph-plant'></i> Sat Sri Akal / Namaste! Great to hear from you. I am here to assist you with your {$crop_name} procurement. What would you like to know?"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
 
@@ -150,7 +150,7 @@ if (isset($_POST['send_message'])) {
                 $replies = [
                     "🙏 I sincerely apologize for the inconvenience. Please share the details of the issue and I will resolve it at the earliest. Customer satisfaction is my priority!",
                     "😔 I am sorry to hear about this. Please raise a formal complaint through AgroNava support and I will cooperate fully to resolve the matter as soon as possible.",
-                    "✅ I take every feedback seriously. Please describe the problem and I will arrange either a replacement or a refund depending on the situation. Your trust matters!"
+                    "<i class='ph-duotone ph-check-circle'></i> I take every feedback seriously. Please describe the problem and I will arrange either a replacement or a refund depending on the situation. Your trust matters!"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
 
@@ -166,9 +166,9 @@ if (isset($_POST['send_message'])) {
             // === DEFAULT FALLBACK ===
             } else {
                 $replies = [
-                    "🌾 Thank you for your message! I will get back to you shortly regarding your inquiry about {$crop_name}. For urgent queries, please use the Bargain Propose tool above!",
+                    "<i class='ph-duotone ph-plant'></i> Thank you for your message! I will get back to you shortly regarding your inquiry about {$crop_name}. For urgent queries, please use the Bargain Propose tool above!",
                     "🙏 Namaste Ji! I have noted your message. If you have any questions about price, quality, delivery, or payment — feel free to ask and I will respond promptly!",
-                    "✅ Message received! I am reviewing your query about {$crop_name}. If you wish to negotiate the price, please use the Propose Offer panel for a formal discussion!",
+                    "<i class='ph-duotone ph-check-circle'></i> Message received! I am reviewing your query about {$crop_name}. If you wish to negotiate the price, please use the Propose Offer panel for a formal discussion!",
                     "💬 Thank you for connecting on AgroNava! I am here to help with all your procurement needs. Please feel free to ask anything about this listing!"
                 ];
                 $bot_reply = $replies[array_rand($replies)];
@@ -224,9 +224,9 @@ if (isset($_POST['respond_bargain'])) {
         if ($b_row = mysqli_fetch_assoc($bargain_res)) {
             $p_price = $b_row['proposed_price'];
             if ($action == 'accepted') {
-                $msg_text = "✅ Bargain Accepted! I have agreed to your negotiated rate of ₹{$p_price}/kg. You can checkout now at this price! 🎉";
+                $msg_text = "<i class='ph-duotone ph-check-circle'></i> Bargain Accepted! I have agreed to your negotiated rate of ₹{$p_price}/kg. You can checkout now at this price! <i class='ph-duotone ph-party-popper'></i>";
             } else {
-                $msg_text = "❌ Bargain Declined. Please propose another offer or checkout at the listed standard price.";
+                $msg_text = "<i class='ph-duotone ph-x-circle'></i> Bargain Declined. Please propose another offer or checkout at the listed standard price.";
             }
             mysqli_query($conn, "INSERT INTO chat_messages (sender_id, receiver_id, crop_id, message) 
                                  VALUES ('$user_id', '$buyer_id', '$crop_id', '$msg_text')");
@@ -270,7 +270,7 @@ if (!empty($crop_id)) {
     <title>Direct Connection Room | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="assets/css/style.css?v=2.0">
     
     <style>
         .chat-app {
@@ -398,15 +398,19 @@ if (!empty($crop_id)) {
             }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body style="background: #f1f5f9; min-height: 100vh; overflow: hidden;">
 
     <!-- Navbar -->
     <header class="navbar" style="position: relative;">
         <a href="index.php" class="navbar-brand">
-            <span>🌾</span> AgroNava
+            <span><i class='ph-duotone ph-plant'></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <?php if($role == 'farmer') { ?>
                 <a href="farmer/dashboard.php" style="color: var(--text-muted); font-weight: 600;">My Listings</a>
                 <a href="farmer/orders.php" style="color: var(--text-muted); font-weight: 600;">Manage Orders</a>
@@ -417,7 +421,7 @@ if (!empty($crop_id)) {
             
             <!-- Glowing Notification Bell -->
             <div class="notif-bell-container" id="notif-bell-btn">
-                <span class="notif-bell-icon">🔔</span>
+                <span class="notif-bell-icon"><i class='ph-duotone ph-bell'></i></span>
                 <?php if ($unread_count > 0): ?>
                     <span class="notif-badge"><?php echo $unread_count; ?></span>
                 <?php endif; ?>
@@ -434,11 +438,7 @@ if (!empty($crop_id)) {
                         <?php 
                         if ($notif_res && mysqli_num_rows($notif_res) > 0) {
                             while ($notif = mysqli_fetch_assoc($notif_res)) {
-                                $unread_class = $notif['is_read'] == 0 ? 'unread' : '';
-                                echo '<div class="notif-item ' . $unread_class . '">';
-                                echo '<div class="notif-item-text">' . htmlspecialchars($notif['message']) . '</div>';
-                                echo '<div class="notif-item-time">' . date("d M, h:i A", strtotime($notif['created_at'])) . '</div>';
-                                echo '</div>';
+                                echo get_notification_html($notif);
                             }
                         } else {
                             echo '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No new alerts.</div>';
@@ -464,7 +464,7 @@ if (!empty($crop_id)) {
             <h3 style="font-size: 16px; color: var(--dark); margin-bottom: 6px;">Active Connection</h3>
             
             <div class="sidebar-item active">
-                <span style="font-size: 24px;"><?php echo ($role == 'buyer') ? '👨‍🌾' : '🛒'; ?></span>
+                <span style="font-size: 24px;"><?php echo ($role == 'buyer') ? '👨‍<i class="ph-duotone ph-plant"></i>' : '<i class="ph-duotone ph-shopping-cart"></i>'; ?></span>
                 <div style="flex: 1; min-width: 0;">
                     <h4 style="font-size: 13.5px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         <?php echo htmlspecialchars($other_name); ?>
@@ -509,7 +509,7 @@ if (!empty($crop_id)) {
                             <p style="font-size: 11.5px; color: var(--text-muted); margin: 0 0 12px 0;">Offer a custom price. The grower will be notified and can instantly approve your proposal.</p>
                             <form method="POST" style="display: flex; gap: 10px;">
                                 <input type="number" name="proposed_price" class="form-control" placeholder="Offer price (₹/kg)" min="1" max="<?php echo $crop_price; ?>" required style="max-width: 180px; padding: 8px 12px; font-size: 13px;">
-                                <button type="submit" name="propose_bargain" class="btn btn-primary" style="background: #d97706; border-color: #d97706; padding: 8px 16px; font-size: 12.5px;">Propose Offer 🤝</button>
+                                <button type="submit" name="propose_bargain" class="btn btn-primary" style="background: #d97706; border-color: #d97706; padding: 8px 16px; font-size: 12.5px;">Propose Offer <i class='ph-duotone ph-handshake'></i></button>
                             </form>
                         </div>
                     <?php } else if ($active_bargain['status'] == 'pending') { ?>
@@ -520,18 +520,18 @@ if (!empty($crop_id)) {
                     <?php } else if ($active_bargain['status'] == 'accepted') { ?>
                         <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); padding: 14px; border-radius: var(--radius-md); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                             <div>
-                                <h4 style="color: var(--primary-hover); margin: 0 0 4px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">🎉 Bargain Confirmed!</h4>
+                                <h4 style="color: var(--primary-hover); margin: 0 0 4px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;"><i class='ph-duotone ph-party-popper'></i> Bargain Confirmed!</h4>
                                 <p style="font-size: 12.5px; color: var(--text-main); margin: 0;">Farmer accepted your offer of <strong>₹<?php echo $active_bargain['proposed_price']; ?>/kg</strong>! Direct checkout is active.</p>
                             </div>
-                            <a href="buyer/marketplace.php" class="btn btn-primary" style="padding: 10px 18px; font-size: 13px;">🛒 Checkout Now</a>
+                            <a href="buyer/marketplace.php" class="btn btn-primary" style="padding: 10px 18px; font-size: 13px;"><i class='ph-duotone ph-shopping-cart'></i> Checkout Now</a>
                         </div>
                     <?php } else if ($active_bargain['status'] == 'rejected') { ?>
                         <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); padding: 14px; border-radius: var(--radius-md);">
-                            <h4 style="color: var(--danger); margin: 0 0 4px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;">❌ Bargain Offer Declined</h4>
+                            <h4 style="color: var(--danger); margin: 0 0 4px 0; font-size: 14px; display: flex; align-items: center; gap: 6px;"><i class='ph-duotone ph-x-circle'></i> Bargain Offer Declined</h4>
                             <p style="font-size: 12.5px; color: var(--text-main); margin: 0 0 10px 0;">Offer of ₹<?php echo $active_bargain['proposed_price']; ?>/kg was declined. Submit a revised deal below:</p>
                             <form method="POST" style="display: flex; gap: 10px;">
                                 <input type="number" name="proposed_price" class="form-control" placeholder="New price offer (₹/kg)" min="1" max="<?php echo $crop_price; ?>" required style="max-width: 180px; padding: 8px 12px; font-size: 13px;">
-                                <button type="submit" name="propose_bargain" class="btn btn-primary" style="background: #d97706; border-color: #d97706; padding: 8px 16px; font-size: 12.5px;">Resubmit Offer 🤝</button>
+                                <button type="submit" name="propose_bargain" class="btn btn-primary" style="background: #d97706; border-color: #d97706; padding: 8px 16px; font-size: 12.5px;">Resubmit Offer <i class='ph-duotone ph-handshake'></i></button>
                             </form>
                         </div>
                     <?php } ?>
@@ -546,8 +546,8 @@ if (!empty($crop_id)) {
                             <form method="POST" style="display: flex; gap: 12px; align-items: center;">
                                 <input type="hidden" name="bargain_id" value="<?php echo $active_bargain['id']; ?>">
                                 <input type="hidden" name="bargain_action" id="bargain-action-val" value="accepted">
-                                <button type="submit" name="respond_bargain" id="btn-accept" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px; background: var(--primary-hover);">Accept Deal ✅</button>
-                                <button type="submit" name="respond_bargain" id="btn-reject" class="btn btn-danger" style="padding: 8px 16px; font-size: 13px;">Decline Offer ❌</button>
+                                <button type="submit" name="respond_bargain" id="btn-accept" class="btn btn-primary" style="padding: 8px 16px; font-size: 13px; background: var(--primary-hover);">Accept Deal <i class='ph-duotone ph-check-circle'></i></button>
+                                <button type="submit" name="respond_bargain" id="btn-reject" class="btn btn-danger" style="padding: 8px 16px; font-size: 13px;">Decline Offer <i class='ph-duotone ph-x-circle'></i></button>
                             </form>
                             <script>
                                 document.getElementById('btn-accept').addEventListener('click', () => {
@@ -560,12 +560,12 @@ if (!empty($crop_id)) {
                         </div>
                     <?php } else if ($active_bargain && $active_bargain['status'] == 'accepted') { ?>
                         <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.2); padding: 14px; border-radius: var(--radius-md);">
-                            <h4 style="color: var(--primary-hover); margin: 0 0 4px 0; font-size: 14px;">✅ Negotiated Price Active</h4>
+                            <h4 style="color: var(--primary-hover); margin: 0 0 4px 0; font-size: 14px;"><i class='ph-duotone ph-check-circle'></i> Negotiated Price Active</h4>
                             <p style="font-size: 12.5px; color: var(--text-main); margin: 0;">You agreed to a direct rate of <strong>₹<?php echo $active_bargain['proposed_price']; ?>/kg</strong> for this user. Awaiting purchase order.</p>
                         </div>
                     <?php } else if ($active_bargain && $active_bargain['status'] == 'rejected') { ?>
                         <div style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); padding: 14px; border-radius: var(--radius-md);">
-                            <h4 style="color: var(--danger); margin: 0 0 4px 0; font-size: 14px;">❌ Offer Declined</h4>
+                            <h4 style="color: var(--danger); margin: 0 0 4px 0; font-size: 14px;"><i class='ph-duotone ph-x-circle'></i> Offer Declined</h4>
                             <p style="font-size: 12.5px; color: var(--text-main); margin: 0;">You declined the buyer's offer of ₹<?php echo $active_bargain['proposed_price']; ?>/kg. Awaiting new offer.</p>
                         </div>
                     <?php } ?>
@@ -578,11 +578,11 @@ if (!empty($crop_id)) {
                 <!-- AgroBot Greeting when chat is empty -->
                 <?php if (empty($chat_messages)) { ?>
                     <div class="message-bubble message-received" style="border-left: 3px solid #22c55e; background: linear-gradient(135deg, #f0fdf4, #fff);">
-                        <span style="font-size: 10px; color: #16a34a; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;">🤖 AgroBot (Farmer Assistant)</span>
+                        <span style="font-size: 10px; color: #16a34a; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 6px;"><i class='ph-duotone ph-robot'></i> AgroBot (Farmer Assistant)</span>
                         🙏 Namaste Ji! Welcome to the Direct Trade Connection for <strong><?php echo htmlspecialchars($crop_name); ?></strong>.
                         Our farm-fresh produce is listed at <strong>₹<?php echo $crop_price; ?>/kg</strong>.
                         You can ask me about <strong>price, quality, delivery, payment terms</strong> or make a bargain offer using the panel above.
-                        Looking forward to doing great business with you! 🌾
+                        Looking forward to doing great business with you! <i class='ph-duotone ph-plant'></i>
                     </div>
                 <?php } else { ?>
                     <?php foreach ($chat_messages as $msg) { 
@@ -603,7 +603,7 @@ if (!empty($crop_id)) {
             <div class="chat-footer">
                 <form method="POST" class="chat-input-form">
                     <input type="text" class="chat-input" name="message" placeholder="Type your message here..." required autocomplete="off">
-                    <button type="submit" name="send_message" class="btn btn-primary" style="padding: 12px 24px;">Send ⚡</button>
+                    <button type="submit" name="send_message" class="btn btn-primary" style="padding: 12px 24px;">Send <i class='ph-duotone ph-lightning'></i></button>
                 </form>
             </div>
             

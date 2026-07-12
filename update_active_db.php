@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 include("config/db.php");
 
-echo "<h3>🌾 Upgrading AgroNava Database Schema for Premium Membership</h3>";
+echo "<h3><i class='ph-duotone ph-plant'></i> Upgrading AgroNava Database Schema for Premium Membership</h3>";
 
 // Check if tables exist and need updates
 $table_check = mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'reg_type'");
@@ -49,12 +49,12 @@ if (mysqli_num_rows($table_check) == 0) {
 
     foreach ($alter_queries as $query) {
         if (mysqli_query($conn, $query)) {
-            echo "✅ Query executed: " . substr($query, 0, 45) . "...<br>";
+            echo "<i class='ph-duotone ph-check-circle'></i> Query executed: " . substr($query, 0, 45) . "...<br>";
         } else {
-            echo "❌ Query failed: " . mysqli_error($conn) . "<br>";
+            echo "<i class='ph-duotone ph-x-circle'></i> Query failed: " . mysqli_error($conn) . "<br>";
         }
     }
-    echo "🎉 <strong>Alteration completed successfully!</strong>";
+    echo "<i class='ph-duotone ph-party-popper'></i> <strong>Alteration completed successfully!</strong>";
 } else {
     echo "ℹ️ columns already exist in `users` table. No updates needed.";
 }
@@ -64,9 +64,9 @@ $crop_check = mysqli_query($conn, "SHOW COLUMNS FROM `crops` LIKE 'crop_image'")
 if (mysqli_num_rows($crop_check) == 0) {
     echo "<p>Adding `crop_image` column to `crops` table...</p>";
     if (mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `crop_image` varchar(255) DEFAULT NULL")) {
-        echo "✅ `crop_image` column added to `crops` table successfully!<br>";
+        echo "<i class='ph-duotone ph-check-circle'></i> `crop_image` column added to `crops` table successfully!<br>";
     } else {
-        echo "❌ Failed to add `crop_image` column: " . mysqli_error($conn) . "<br>";
+        echo "<i class='ph-duotone ph-x-circle'></i> Failed to add `crop_image` column: " . mysqli_error($conn) . "<br>";
     }
 } else {
     echo "ℹ️ `crop_image` column already exists in `crops` table.<br>";
@@ -78,7 +78,7 @@ if (mysqli_num_rows($dist_badge_check) == 0) {
     echo "<p>Adding distributor quality fields (`distributor_badge`, `distributor_score`) to `users` table...</p>";
     mysqli_query($conn, "ALTER TABLE `users` ADD COLUMN `distributor_badge` varchar(255) DEFAULT 'Standard Distributor'");
     mysqli_query($conn, "ALTER TABLE `users` ADD COLUMN `distributor_score` int(11) DEFAULT 85");
-    echo "✅ Distributor quality columns added.<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> Distributor quality columns added.<br>";
 }
 
 // 2. Check and add rating, review, and sales trend fields to `crops`
@@ -88,7 +88,7 @@ if (mysqli_num_rows($crop_trend_check) == 0) {
     mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `rating_avg` decimal(3,2) DEFAULT 4.50");
     mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `review_count` int(11) DEFAULT 5");
     mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `sales_volume` int(11) DEFAULT 45");
-    echo "✅ Crop ratings and sales trend columns added.<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> Crop ratings and sales trend columns added.<br>";
 }
 
 // 3. Seed realistic high-performance quality stats for demo purposes
@@ -104,14 +104,14 @@ mysqli_query($conn, "UPDATE `crops` SET `rating_avg` = 4.85, `review_count` = 36
 mysqli_query($conn, "UPDATE `crops` SET `rating_avg` = 4.70, `review_count` = 18, `sales_volume` = 140 WHERE `id` = 5");
 
 // --- START OF NEW SCHEMAS FOR EXPIRY, COMPARISONS, AND PERSISTENT BARGAINING ---
-echo "<h3>🌱 Upgrading AgroNava Database with Premium Expiry, Comparison & Bargaining Ledger...</h3>";
+echo "<h3><i class='ph-duotone ph-leaf'></i> Upgrading AgroNava Database with Premium Expiry, Comparison & Bargaining Ledger...</h3>";
 
 // 1. Alter crops table for Expiry Date and Supermarket Reference Prices
 $crops_expiry_check = mysqli_query($conn, "SHOW COLUMNS FROM `crops` LIKE 'expiry_date'");
 if (mysqli_num_rows($crops_expiry_check) == 0) {
     echo "<p>Adding `expiry_date` DATE column to `crops` table...</p>";
     mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `expiry_date` DATE DEFAULT NULL");
-    echo "✅ `expiry_date` column added.<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> `expiry_date` column added.<br>";
 }
 
 $crops_ref_rel_check = mysqli_query($conn, "SHOW COLUMNS FROM `crops` LIKE 'ref_reliance_price'");
@@ -120,7 +120,7 @@ if (mysqli_num_rows($crops_ref_rel_check) == 0) {
     mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `ref_reliance_price` int(11) DEFAULT NULL");
     mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `ref_bigbasket_price` int(11) DEFAULT NULL");
     mysqli_query($conn, "ALTER TABLE `crops` ADD COLUMN `ref_mandi_price` int(11) DEFAULT NULL");
-    echo "✅ Price comparison columns added.<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> Price comparison columns added.<br>";
 }
 
 // Seed realistic future expiry dates and comparison references for demo crops
@@ -136,21 +136,21 @@ mysqli_query($conn, "UPDATE `crops` SET `expiry_date` = '$date_10d', `ref_relian
 mysqli_query($conn, "UPDATE `crops` SET `expiry_date` = '$date_1d', `ref_reliance_price` = 60, `ref_bigbasket_price` = 62, `ref_mandi_price` = 38 WHERE `id` = 3"); // tomatoes
 mysqli_query($conn, "UPDATE `crops` SET `expiry_date` = '$date_10d', `ref_reliance_price` = 38, `ref_bigbasket_price` = 40, `ref_mandi_price` = 24 WHERE `id` = 4"); // wheat
 mysqli_query($conn, "UPDATE `crops` SET `expiry_date` = '$date_8d', `ref_reliance_price` = 110, `ref_bigbasket_price` = 115, `ref_mandi_price` = 78 WHERE `id` = 5"); // mustard seeds
-echo "✅ Seeding comparison data completed.<br>";
+echo "<i class='ph-duotone ph-check-circle'></i> Seeding comparison data completed.<br>";
 
 // 2. Alter orders table to include unit price tracking for historical accuracy and bargaining
 $orders_price_check = mysqli_query($conn, "SHOW COLUMNS FROM `orders` LIKE 'price'");
 if (mysqli_num_rows($orders_price_check) == 0) {
     echo "<p>Adding `price` column to `orders` table for historical audit safety...</p>";
     mysqli_query($conn, "ALTER TABLE `orders` ADD COLUMN `price` int(11) NOT NULL DEFAULT 0 AFTER `quantity`");
-    echo "✅ `price` column added to `orders`. Running order price backfill migration...<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> `price` column added to `orders`. Running order price backfill migration...<br>";
     
     // Backfill historical order prices from crops table
     $backfill_query = "UPDATE `orders` o JOIN `crops` c ON o.crop_id = c.id SET o.price = c.price WHERE o.price = 0";
     if (mysqli_query($conn, $backfill_query)) {
-        echo "✅ Order prices backfilled successfully.<br>";
+        echo "<i class='ph-duotone ph-check-circle'></i> Order prices backfilled successfully.<br>";
     } else {
-        echo "❌ Backfill failed: " . mysqli_error($conn) . "<br>";
+        echo "<i class='ph-duotone ph-x-circle'></i> Backfill failed: " . mysqli_error($conn) . "<br>";
     }
 }
 
@@ -166,9 +166,9 @@ $chat_msg_sql = "CREATE TABLE IF NOT EXISTS `chat_messages` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 if (mysqli_query($conn, $chat_msg_sql)) {
-    echo "✅ `chat_messages` ledger established.<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> `chat_messages` ledger established.<br>";
 } else {
-    echo "❌ Failed creating `chat_messages` table: " . mysqli_error($conn) . "<br>";
+    echo "<i class='ph-duotone ph-x-circle'></i> Failed creating `chat_messages` table: " . mysqli_error($conn) . "<br>";
 }
 
 // 4. Create persistent bargaining ledger
@@ -184,9 +184,9 @@ $bargains_sql = "CREATE TABLE IF NOT EXISTS `bargains` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 if (mysqli_query($conn, $bargains_sql)) {
-    echo "✅ `bargains` ledger established.<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> `bargains` ledger established.<br>";
 } else {
-    echo "❌ Failed creating `bargains` table: " . mysqli_error($conn) . "<br>";
+    echo "<i class='ph-duotone ph-x-circle'></i> Failed creating `bargains` table: " . mysqli_error($conn) . "<br>";
 }
 
 // 5. Create persistent notifications ledger
@@ -200,13 +200,13 @@ $notif_sql = "CREATE TABLE IF NOT EXISTS `notifications` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
 if (mysqli_query($conn, $notif_sql)) {
-    echo "✅ `notifications` ledger established.<br>";
+    echo "<i class='ph-duotone ph-check-circle'></i> `notifications` ledger established.<br>";
 } else {
-    echo "❌ Failed creating `notifications` table: " . mysqli_error($conn) . "<br>";
+    echo "<i class='ph-duotone ph-x-circle'></i> Failed creating `notifications` table: " . mysqli_error($conn) . "<br>";
 }
 
 // 6. Add AgriDirect Advanced Delivery and Transparency Fields
-echo "<h3>🚚 Upgrading AgroNava Database with AgriDirect Delivery Features...</h3>";
+echo "<h3><i class='ph-duotone ph-truck'></i> Upgrading AgroNava Database with AgriDirect Delivery Features...</h3>";
 
 $orders_agri_check = mysqli_query($conn, "SHOW COLUMNS FROM `orders` LIKE 'transport_cost'");
 if (mysqli_num_rows($orders_agri_check) == 0) {
@@ -221,9 +221,9 @@ if (mysqli_num_rows($orders_agri_check) == 0) {
     ];
     foreach ($order_alters as $q) {
         if(mysqli_query($conn, $q)) {
-            echo "✅ Query executed: " . substr($q, 0, 50) . "...<br>";
+            echo "<i class='ph-duotone ph-check-circle'></i> Query executed: " . substr($q, 0, 50) . "...<br>";
         } else {
-            echo "❌ Query failed: " . mysqli_error($conn) . "<br>";
+            echo "<i class='ph-duotone ph-x-circle'></i> Query failed: " . mysqli_error($conn) . "<br>";
         }
     }
 } else {
@@ -240,9 +240,9 @@ if (mysqli_num_rows($crops_agri_check) == 0) {
     ];
     foreach ($crop_alters as $q) {
         if(mysqli_query($conn, $q)) {
-            echo "✅ Query executed: " . substr($q, 0, 50) . "...<br>";
+            echo "<i class='ph-duotone ph-check-circle'></i> Query executed: " . substr($q, 0, 50) . "...<br>";
         } else {
-            echo "❌ Query failed: " . mysqli_error($conn) . "<br>";
+            echo "<i class='ph-duotone ph-x-circle'></i> Query failed: " . mysqli_error($conn) . "<br>";
         }
     }
 } else {
@@ -253,14 +253,14 @@ $users_upi_check = mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'upi_id'"
 if (mysqli_num_rows($users_upi_check) == 0) {
     echo "<p>Adding `upi_id` field to `users` table...</p>";
     if(mysqli_query($conn, "ALTER TABLE `users` ADD COLUMN `upi_id` varchar(100) DEFAULT NULL")) {
-        echo "✅ Query executed: ALTER TABLE users ADD COLUMN upi_id...<br>";
+        echo "<i class='ph-duotone ph-check-circle'></i> Query executed: ALTER TABLE users ADD COLUMN upi_id...<br>";
     } else {
-        echo "❌ Query failed: " . mysqli_error($conn) . "<br>";
+        echo "<i class='ph-duotone ph-x-circle'></i> Query failed: " . mysqli_error($conn) . "<br>";
     }
 } else {
     echo "ℹ️ `upi_id` column already exists in `users`.<br>";
 }
 
-echo "🎉 <strong>Database upgrade successfully completed!</strong>";
+echo "<i class='ph-duotone ph-party-popper'></i> <strong>Database upgrade successfully completed!</strong>";
 ?>
 

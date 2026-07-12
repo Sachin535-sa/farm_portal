@@ -30,7 +30,7 @@ class TransportCalculator {
             return [
                 'type' => 'Ventilated Box',
                 'fee' => 40,
-                'icon' => '📦'
+                'icon' => '<i class="ph-duotone ph-package"></i>'
             ];
         } elseif (preg_match('/(apple|mango|banana|orange|grape|fruit)/', $name)) {
             return [
@@ -43,7 +43,7 @@ class TransportCalculator {
             return [
                 'type' => 'Jute Bag',
                 'fee' => 20,
-                'icon' => '🌾'
+                'icon' => '<i class="ph-duotone ph-plant"></i>'
             ];
         }
     }

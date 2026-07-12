@@ -55,6 +55,10 @@ if(isset($_POST['dispatch_order']) && isset($_FILES['original_parcel'])) {
                 // Update orders status to shipped and save parcel image
                 mysqli_query($conn, "UPDATE orders SET status = 'shipped', tracking_status = 'Out for Delivery', original_parcel_image = '$new_img_name' WHERE id = '$order_id'");
                 
+                // Add tracking ledger entry
+                mysqli_query($conn, "INSERT INTO order_tracking (order_id, tracking_status, location, updated_by_role, updated_by_id) 
+                                     VALUES ('$order_id', 'Out for Delivery', 'Farmer Facility (Verified Photo)', 'farmer', '$farmer_id')");
+                
                 $msg = "Your order #$order_id for $qty kg of $crop_name has been SHIPPED and is out for delivery! Reference packaging image stored.";
                 $msg_clean = mysqli_real_escape_string($conn, $msg);
                 mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$msg_clean')");
@@ -140,6 +144,10 @@ if(isset($_GET['update_id']) && isset($_GET['status'])){
                 if ($valid) {
                     mysqli_query($conn, "UPDATE orders SET status = '$status', tracking_status = '$track_status' WHERE id = '$order_id'");
                     
+                    // Add tracking ledger entry
+                    mysqli_query($conn, "INSERT INTO order_tracking (order_id, tracking_status, location, updated_by_role, updated_by_id) 
+                                         VALUES ('$order_id', '$track_status', 'Farmer Facility', 'farmer', '$farmer_id')");
+                    
                     // Insert buyer notification
                     $msg_clean = mysqli_real_escape_string($conn, $msg);
                     mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$msg_clean')");
@@ -183,11 +191,11 @@ $show_error = isset($_GET['err']);
 // Logistics progress render helper (Farmer version matches Buyer design perfectly)
 function renderLogisticsTimeline($status) {
     $stages = [
-        ['key' => 'pending', 'label' => 'Placed 📝', 'num' => 0],
-        ['key' => 'accepted', 'label' => 'Accepted 🤝', 'num' => 1],
-        ['key' => 'packed', 'label' => 'Packed 📦', 'num' => 2],
-        ['key' => 'shipped', 'label' => 'Shipped 🚚', 'num' => 3],
-        ['key' => 'delivered', 'label' => 'Delivered 🤝', 'num' => 4]
+        ['key' => 'pending', 'label' => 'Placed <i class="ph-duotone ph-file-text"></i>', 'num' => 0],
+        ['key' => 'accepted', 'label' => 'Accepted <i class="ph-duotone ph-handshake"></i>', 'num' => 1],
+        ['key' => 'packed', 'label' => 'Packed <i class="ph-duotone ph-package"></i>', 'num' => 2],
+        ['key' => 'shipped', 'label' => 'Shipped <i class="ph-duotone ph-truck"></i>', 'num' => 3],
+        ['key' => 'delivered', 'label' => 'Delivered <i class="ph-duotone ph-handshake"></i>', 'num' => 4]
     ];
     
     $status = strtolower($status);
@@ -196,7 +204,7 @@ function renderLogisticsTimeline($status) {
         echo '<div class="timeline-wrapper">';
         echo '<div class="timeline-title">Logistics Status Timeline</div>';
         echo '<div style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: var(--radius-sm); padding: 12px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px;">';
-        echo '❌ Order Cancelled & Items Returned to Stock';
+        echo '<i class="ph-duotone ph-x-circle"></i> Order Cancelled & Items Returned to Stock';
         echo '</div>';
         echo '</div>';
         return;
@@ -245,25 +253,29 @@ function renderLogisticsTimeline($status) {
     <title>Manage Orders | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
     <!-- Header bar -->
     <header class="navbar">
         <a href="dashboard.php" class="navbar-brand">
-            <span>🌾</span> AgroNava
+            <span><i class="ph-duotone ph-plant"></i></span> AgroNava
         </a>
-        <div class="navbar-menu">
+        <button class="navbar-toggle" id="navbar-toggle-btn" aria-label="Toggle navigation">
+            <span>☰</span>
+        </button>
+        <div class="navbar-menu" id="navbar-menu-container">
             <a href="dashboard.php" style="color: var(--text-muted); font-weight: 600;">My Listings</a>
             <a href="orders.php" style="color: var(--secondary); font-weight: 700;">Manage Orders</a>
             <a href="../market_prices.php" style="color: var(--text-muted); font-weight: 600;">Live Prices</a>
-            <a href="../admin_complaints.php" style="color: #ef4444; font-weight: 700;">🛡️ Dispute Admin</a>
+            <a href="../admin_complaints.php" style="color: #ef4444; font-weight: 700;"><i class="ph-duotone ph-shield-check"></i> Dispute Admin</a>
             <a href="profile.php?id=<?php echo $farmer_id; ?>" style="color: var(--text-muted); font-weight: 600;">My Public Portfolio</a>
             
             <!-- Glowing Notification Bell -->
             <div class="notif-bell-container" id="notif-bell-btn">
-                <span class="notif-bell-icon">🔔</span>
+                <span class="notif-bell-icon"><i class="ph-duotone ph-bell"></i></span>
                 <?php if ($unread_count > 0): ?>
                     <span class="notif-badge"><?php echo $unread_count; ?></span>
                 <?php endif; ?>
@@ -280,11 +292,7 @@ function renderLogisticsTimeline($status) {
                         <?php 
                         if ($notif_res && mysqli_num_rows($notif_res) > 0) {
                             while ($notif = mysqli_fetch_assoc($notif_res)) {
-                                $unread_class = $notif['is_read'] == 0 ? 'unread' : '';
-                                echo '<div class="notif-item ' . $unread_class . '">';
-                                echo '<div class="notif-item-text">' . htmlspecialchars($notif['message']) . '</div>';
-                                echo '<div class="notif-item-time">' . date("d M, h:i A", strtotime($notif['created_at'])) . '</div>';
-                                echo '</div>';
+                                echo get_notification_html($notif);
                             }
                         } else {
                             echo '<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">No new alerts.</div>';
@@ -298,7 +306,7 @@ function renderLogisticsTimeline($status) {
             </div>
 
             <div class="user-badge">
-                <span>👨‍🌾</span> <?php echo htmlspecialchars($_SESSION['name']); ?>
+                <span>👨‍<i class="ph-duotone ph-plant"></i></span> <?php echo htmlspecialchars($_SESSION['name']); ?>
             </div>
             <a class="btn btn-danger" style="padding: 8px 16px; font-size: 13px;" href="../auth/logout.php">Logout</a>
         </div>
@@ -309,7 +317,7 @@ function renderLogisticsTimeline($status) {
         
         <?php if($show_updated) { ?>
             <div style="background: var(--success-light); border: 1px solid rgba(16, 185, 129, 0.2); color: var(--primary-hover); padding: 18px; border-radius: var(--radius-md); margin-bottom: 30px; font-weight: 600; display: flex; align-items: center; gap: 12px;" class="animate-slide">
-                <span style="font-size: 24px;">📈</span>
+                <span style="font-size: 24px;"><i class="ph-duotone ph-trend-up"></i></span>
                 <div>
                     <h4 style="color: var(--primary-hover); margin: 0;">Logistics Pipeline Updated</h4>
                     <p style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin: 0;">Order status has been updated and a status notification has been delivered to the buyer.</p>
@@ -319,7 +327,7 @@ function renderLogisticsTimeline($status) {
 
         <?php if($show_cancelled) { ?>
             <div style="background: var(--danger-light); border: 1px solid rgba(239, 68, 68, 0.2); color: #ef4444; padding: 18px; border-radius: var(--radius-md); margin-bottom: 30px; font-weight: 600; display: flex; align-items: center; gap: 12px;" class="animate-slide">
-                <span style="font-size: 24px;">❌</span>
+                <span style="font-size: 24px;"><i class="ph-duotone ph-x-circle"></i></span>
                 <div>
                     <h4 style="color: #ef4444; margin: 0;">Order Cancelled</h4>
                     <p style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin: 0;">Order status has been updated to Cancelled. Crop inventory stock has been restored.</p>
@@ -329,7 +337,7 @@ function renderLogisticsTimeline($status) {
 
         <?php if($show_error) { ?>
             <div style="background: var(--warning-light); border: 1px solid rgba(245, 158, 11, 0.2); color: #d97706; padding: 18px; border-radius: var(--radius-md); margin-bottom: 30px; font-weight: 600; display: flex; align-items: center; gap: 12px;" class="animate-slide">
-                <span style="font-size: 24px;">⚠️</span>
+                <span style="font-size: 24px;"><i class="ph-duotone ph-warning"></i></span>
                 <div>
                     <h4 style="color: #d97706; margin: 0;">Logistics Operation Error</h4>
                     <p style="font-size: 13px; font-weight: 500; color: var(--text-muted); margin: 0;">
@@ -375,7 +383,7 @@ function renderLogisticsTimeline($status) {
                         </div>
                         
                         <h3 style="font-size: 20px; color: var(--dark); margin-bottom: 6px;">
-                            🌾 <?php echo htmlspecialchars($row['crop_name']); ?>
+                            <i class="ph-duotone ph-plant"></i> <?php echo htmlspecialchars($row['crop_name']); ?>
                         </h3>
                         
                         <div style="border-bottom: 1px solid var(--border); padding-bottom: 14px; margin-bottom: 14px;">
@@ -411,18 +419,18 @@ function renderLogisticsTimeline($status) {
                                 <div style="display: flex; gap: 8px; width: 100%;">
                                     <a class="btn btn-primary" style="flex: 2; justify-content: center; padding: 10px; font-size: 12.5px;" 
                                        href="orders.php?update_id=<?php echo $row['id']; ?>&status=accepted">
-                                        🤝 Accept Order
+                                        <i class="ph-duotone ph-handshake"></i> Accept Order
                                     </a>
                                     <a class="btn btn-danger" style="flex: 1; justify-content: center; padding: 10px; font-size: 12.5px;" 
                                        onclick="return confirm('Are you sure you want to cancel and restock this order?');"
                                        href="orders.php?update_id=<?php echo $row['id']; ?>&status=cancelled">
-                                        ❌ Cancel
+                                        <i class="ph-duotone ph-x-circle"></i> Cancel
                                     </a>
                                 </div>
                             <?php } else if($status == "accepted") { ?>
                                 <a class="btn" style="width: 100%; justify-content: center; padding: 10px; font-size: 13px; background: #0f766e; color: white;" 
                                    href="orders.php?update_id=<?php echo $row['id']; ?>&status=packed">
-                                    📦 Mark Packed
+                                    <i class="ph-duotone ph-package"></i> Mark Packed
                                 </a>
                             <?php } else if($status == "packed") { ?>
                                 <form action="orders.php" method="POST" enctype="multipart/form-data" style="margin-top: 10px; padding: 12px; border: 1px dashed rgba(16, 185, 129, 0.4); border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.03); text-align: left;">
@@ -432,12 +440,12 @@ function renderLogisticsTimeline($status) {
                                     </div>
                                     <input type="hidden" name="dispatch_order_id" value="<?php echo $row['id']; ?>">
                                     <button type="submit" name="dispatch_order" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 8px; font-size: 12.5px;">
-                                        🚚 Upload & Dispatch Order
+                                        <i class="ph-duotone ph-truck"></i> Upload & Dispatch Order
                                     </button>
                                 </form>
                             <?php } else if($status == "shipped") { ?>
                                 <div style="border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 10px; background: var(--light-bg); text-align: center;">
-                                    <span style="font-size: 11px; font-weight: 700; color: var(--secondary); display: block; margin-bottom: 4px;">🤝 PENDING HANDOVER VERIFICATION</span>
+                                    <span style="font-size: 11px; font-weight: 700; color: var(--secondary); display: block; margin-bottom: 4px;"><i class="ph-duotone ph-handshake"></i> PENDING HANDOVER VERIFICATION</span>
                                     <a class="btn" style="width: 100%; justify-content: center; padding: 10px; font-size: 13px; background: #3b82f6; color: white;" 
                                        href="verify_delivery.php?order_id=<?php echo $row['id']; ?>">
                                         🔑 Verify Handover (Confirm Delivery)
@@ -445,11 +453,11 @@ function renderLogisticsTimeline($status) {
                                 </div>
                             <?php } else if($status == "delivered") { ?>
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--primary-hover); font-weight: 700; font-size: 14px; padding: 10px; background: var(--success-light); border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.15);">
-                                    <span>🎉</span> Trade Handover Settled
+                                    <span><i class="ph-duotone ph-party-popper"></i></span> Trade Handover Settled
                                 </div>
                             <?php } else { ?>
                                 <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--danger); font-weight: 700; font-size: 14px; padding: 10px; background: var(--danger-light); border-radius: var(--radius-sm); border: 1px solid rgba(239, 68, 68, 0.15);">
-                                    <span>❌</span> Order Cancelled
+                                    <span><i class="ph-duotone ph-x-circle"></i></span> Order Cancelled
                                 </div>
                             <?php } ?>
                             

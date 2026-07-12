@@ -36,7 +36,7 @@ if (isset($_POST['login'])) {
         header("Location: ../delivery/dashboard.php");
         exit();
     } else {
-        $message = "🔒 Incorrect credentials or unauthorized access.";
+        $message = "<i class='ph-duotone ph-lock-key'></i> Incorrect credentials or unauthorized access.";
     }
 }
 ?>
@@ -161,6 +161,7 @@ if (isset($_POST['login'])) {
             font-size: 13px;
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 

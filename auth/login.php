@@ -251,6 +251,7 @@ if (isset($_SESSION['user_id'])) {
             }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
@@ -258,7 +259,7 @@ if (isset($_SESSION['user_id'])) {
         <a href="../index.php" class="brand-logo" style="text-decoration: none;">AGRONAVA</a>
         <div class="brand-tag">Select Your Vector</div>
         <div style="margin-top: 12px; pointer-events: auto;">
-            <a href="login_delivery.php" style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; font-weight: 700; background: rgba(0,0,0,0.04); padding: 8px 16px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.08); transition: all 0.3s ease;">🚚 Logistics Gateway</a>
+            <a href="login_delivery.php" style="font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #64748b; font-weight: 700; background: rgba(0,0,0,0.04); padding: 8px 16px; border-radius: 50px; border: 1px solid rgba(0,0,0,0.08); transition: all 0.3s ease;"><i class='ph-duotone ph-truck'></i> Logistics Gateway</a>
         </div>
     </header>
 

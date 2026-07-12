@@ -77,6 +77,11 @@ if(isset($_POST['place_order'])) {
                 mysqli_query($conn, $insert_sql);
                 $order_id = mysqli_insert_id($conn);
                 
+                // 4.1 Initialize order tracking ledger
+                $tracking_sql = "INSERT INTO order_tracking (order_id, tracking_status, location, updated_by_role, updated_by_id) 
+                                 VALUES ('$order_id', 'Preparing', 'Farmer Facility', 'buyer', '$buyer_id')";
+                mysqli_query($conn, $tracking_sql);
+                
                 // 5. Send Real-Time Notifications (Skip billing notification if payment pending)
                 $crop_name_clean = mysqli_real_escape_string($conn, $crop['crop_name']);
                 
@@ -88,14 +93,14 @@ if(isset($_POST['place_order'])) {
                     $otp_msg = "🔐 Delivery OTP for Order #".$order_id.": " . $delivery_otp . " (Keep this safe!)";
                     mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$otp_msg')");
                     
-                    $farmer_msg = "🌾 Harvest Sold: Buyer has purchased " . $qty_to_order . " kg of your listed " . $crop['crop_name'] . "!";
+                    $farmer_msg = "<i class='ph-duotone ph-plant'></i> Harvest Sold: Buyer has purchased " . $qty_to_order . " kg of your listed " . $crop['crop_name'] . "!";
                     $farmer_msg_clean = mysqli_real_escape_string($conn, $farmer_msg);
                     mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$farmer_id', '$farmer_msg_clean')");
                 }
                 
                 // Trigger low stock warning if new quantity <= 20
                 if ($new_qty <= 20) {
-                    $low_stock_msg = "⚠️ Low Stock Warning: Your crop " . $crop['crop_name'] . " only has " . $new_qty . " kg left. Consider restocking soon!";
+                    $low_stock_msg = "<i class='ph-duotone ph-warning'></i> Low Stock Warning: Your crop " . $crop['crop_name'] . " only has " . $new_qty . " kg left. Consider restocking soon!";
                     $low_stock_msg_clean = mysqli_real_escape_string($conn, $low_stock_msg);
                     mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$farmer_id', '$low_stock_msg_clean')");
                 }

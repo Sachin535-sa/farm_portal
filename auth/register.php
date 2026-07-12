@@ -30,21 +30,21 @@ if (isset($_POST['register'])) {
     // Check captcha
     $captcha_input = strtoupper(trim($_POST['captcha']));
     if ($captcha_input !== $_SESSION['captcha_text']) {
-        $message = "⚠️ Captcha code is incorrect! Please try again.";
+        $message = "<i class='ph-duotone ph-warning'></i> Captcha code is incorrect! Please try again.";
     } 
     // Check password confirmation
     else if ($password !== $confirm_password) {
-        $message = "⚠️ Passwords do not match!";
+        $message = "<i class='ph-duotone ph-warning'></i> Passwords do not match!";
     } 
     // Check bank account confirmation
     else if ($_POST['bank_account_no'] !== $_POST['confirm_account_no']) {
-        $message = "⚠️ Bank Account Numbers do not match!";
+        $message = "<i class='ph-duotone ph-warning'></i> Bank Account Numbers do not match!";
     }
     else {
         // Check if email already exists
         $check = mysqli_query($conn, "SELECT id FROM users WHERE email='$email'");
         if (mysqli_num_rows($check) > 0) {
-            $message = "⚠️ This Email ID is already registered!";
+            $message = "<i class='ph-duotone ph-warning'></i> This Email ID is already registered!";
         } else {
             // Retrieve other AgroNava fields
             $reg_type = mysqli_real_escape_string($conn, $_POST['role']);
@@ -139,11 +139,11 @@ if (isset($_POST['register'])) {
             )";
             
             if (mysqli_query($conn, $sql)) {
-                $success_msg = "🎉 Registration successful! Your AgroNava membership details have been verified and saved.";
+                $success_msg = "<i class='ph-duotone ph-party-popper'></i> Registration successful! Your AgroNava membership details have been verified and saved.";
                 // Clear captcha
                 $_SESSION['captcha_text'] = substr(str_shuffle("ABCDEFGHJKLMNPQRSTUVWXYZ23456789"), 0, 6);
             } else {
-                $message = "⚠️ Database Error: " . mysqli_error($conn);
+                $message = "<i class='ph-duotone ph-warning'></i> Database Error: " . mysqli_error($conn);
             }
         }
     }
@@ -160,7 +160,7 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
     <title>Premium Membership Registration | AgroNava</title>
     
     <!-- Design styling system & Google Fonts -->
-    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
+    <link rel="stylesheet" href="../assets/css/style.css?v=2.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -860,6 +860,7 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
             }
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body class="auth-custom-bg">
 
@@ -874,7 +875,7 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
     <div style="text-align: center; margin-bottom: 20px; position: relative; z-index: 10;">
         <!-- Logo centered on top for beautiful presentation -->
         <a href="../index.php" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
-            <span style="font-size: 28px; filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.5));">🌾</span>
+            <span style="font-size: 28px; filter: drop-shadow(0 0 10px rgba(52, 211, 153, 0.5));"><i class='ph-duotone ph-plant'></i></span>
             <span style="font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 900; color: #14532d; letter-spacing: 1px;">AgroNava Portal</span>
         </a>
     </div>
@@ -896,7 +897,7 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
                     <span>D</span><span>I</span><span>R</span><span>E</span><span>C</span><span>T</span><span>-</span><span>T</span><span>R</span><span>A</span><span>D</span><span>E</span>
                 </div>
                 
-                <span class="brand-premium-pill">🛡️ Verified Direct Trade Ledger</span>
+                <span class="brand-premium-pill"><i class='ph-duotone ph-shield-check'></i> Verified Direct Trade Ledger</span>
                 
                 <p class="brand-desc">Join our premium digital harvest community. Benefit from zero commissions, full price transparency, and secure transactions directly with farmers and wholesale buyers.</p>
                 
@@ -972,13 +973,13 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
                     
                     <?php if ($message != "") { ?>
                         <div class="elite-alert-error">
-                            <span>⚠️</span> <?php echo $message; ?>
+                            <span><i class='ph-duotone ph-warning'></i></span> <?php echo $message; ?>
                         </div>
                     <?php } ?>
 
                     <?php if ($success_msg != "") { ?>
                         <div class="elite-alert-success">
-                            <span>🎉</span> <?php echo $success_msg; ?>
+                            <span><i class='ph-duotone ph-party-popper'></i></span> <?php echo $success_msg; ?>
                             <a href="login.php" style="margin-left: auto; background: #fbbf24; color: #0f172a; padding: 8px 16px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase;">Sign In Now</a>
                         </div>
                     <?php } ?>
@@ -994,8 +995,8 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
                                 <label class="form-label-custom" for="role">Registration Type <span class="required-star-custom">*</span></label>
                                 <select class="form-control-custom" id="role" name="role" required>
                                     <option value="">-Select-</option>
-                                    <option value="farmer" <?php if($preset_role == 'farmer') echo 'selected'; ?>>👨‍🌾 Farmer (I want to sell produce)</option>
-                                    <option value="buyer" <?php if($preset_role == 'buyer') echo 'selected'; ?>>🛒 Buyer / Trader (I want to purchase produce)</option>
+                                    <option value="farmer" <?php if($preset_role == 'farmer') echo 'selected'; ?>>👨‍<i class='ph-duotone ph-plant'></i> Farmer (I want to sell produce)</option>
+                                    <option value="buyer" <?php if($preset_role == 'buyer') echo 'selected'; ?>><i class='ph-duotone ph-shopping-cart'></i> Buyer / Trader (I want to purchase produce)</option>
                                 </select>
                             </div>
                             
@@ -1245,7 +1246,7 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
                             </div>
                             
                             <div class="form-section-title" style="grid-column: span 2; margin-top: 15px;">
-                                <span class="section-cap">⚙️</span> Human Verification & Acknowledgement
+                                <span class="section-cap"><i class='ph-duotone ph-gear'></i></span> Human Verification & Acknowledgement
                             </div>
                             
                             <div class="form-group-custom" style="grid-column: span 2;">
@@ -1519,7 +1520,7 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
             }
             
             if (n === totalSteps) {
-                document.getElementById("nextBtn").innerText = "Register Account 🚀";
+                document.getElementById("nextBtn").innerText = "Register Account <i class='ph-duotone ph-rocket'></i>";
                 document.getElementById("nextBtn").className = "btn-wizard btn-wizard-primary";
             } else {
                 document.getElementById("nextBtn").innerText = "Next Step ➡️";
@@ -1641,7 +1642,7 @@ $preset_role = isset($_GET['role']) ? $_GET['role'] : '';
         // Sprouts JS Logic
         const sc = document.getElementById('sprouts');
         if (sc) {
-            const em = ['🌱','🌿','🍃','🌾','🌻','🥬','🌽'];
+            const em = ['<i class='ph-duotone ph-leaf'></i>','🌿','🍃','<i class='ph-duotone ph-plant'></i>','🌻','🥬','🌽'];
             for (let i = 0; i < 18; i++) {
                 const s = document.createElement('div');
                 s.className = 'sprout-light';

@@ -278,6 +278,7 @@ $total = $subtotal + $delivery_charge;
             color: #ef4444;
         }
     </style>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
 
@@ -297,7 +298,7 @@ $total = $subtotal + $delivery_charge;
         <div class="invoice-header">
             <div>
                 <div class="invoice-brand">
-                    <span>🌾</span> AgroNava
+                    <span><i class="ph-duotone ph-plant"></i></span> AgroNava
                 </div>
                 <p style="color: #64748b; font-size: 12px; margin: 4px 0 0 0;">Zero Middlemen Agricultural Commerce</p>
             </div>
@@ -311,14 +312,14 @@ $total = $subtotal + $delivery_charge;
         <div class="invoice-grid">
             
             <div>
-                <div class="billing-title">👨‍🌾 Farmer (Supplier)</div>
+                <div class="billing-title">👨‍<i class="ph-duotone ph-plant"></i> Farmer (Supplier)</div>
                 <h3 style="font-size: 16px; margin: 0 0 4px 0; color: #0f172a;"><?php echo htmlspecialchars($order['farmer_name']); ?></h3>
                 <p style="font-size: 13.5px; color: #64748b; margin: 0 0 2px 0;">Agricultural Grower Portals</p>
                 <p style="font-size: 13.5px; color: #64748b; margin: 0;">✉️ <?php echo htmlspecialchars($order['farmer_email']); ?></p>
             </div>
             
             <div>
-                <div class="billing-title">🛒 Buyer (Recipient)</div>
+                <div class="billing-title"><i class="ph-duotone ph-shopping-cart"></i> Buyer (Recipient)</div>
                 <h3 style="font-size: 16px; margin: 0 0 4px 0; color: #0f172a;"><?php echo htmlspecialchars($order['buyer_name']); ?></h3>
                 <p style="font-size: 13.5px; color: #64748b; margin: 0 0 2px 0;">Registered Portal Consumer</p>
                 <p style="font-size: 13.5px; color: #64748b; margin: 0;">✉️ <?php echo htmlspecialchars($order['buyer_email']); ?></p>
@@ -328,11 +329,11 @@ $total = $subtotal + $delivery_charge;
 
         <div style="margin-bottom: 12px; font-size: 13.5px; color: #64748b; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
-                <span>📅 <strong>Transaction Date:</strong> <?php echo date("F d, Y"); ?></span>
-                <span style="margin-left: 30px;">🚚 <strong>Status:</strong> <?php echo htmlspecialchars($order['status']); ?></span>
+                <span><i class="ph-duotone ph-calendar-blank"></i> <strong>Transaction Date:</strong> <?php echo date("F d, Y"); ?></span>
+                <span style="margin-left: 30px;"><i class="ph-duotone ph-truck"></i> <strong>Status:</strong> <?php echo htmlspecialchars($order['status']); ?></span>
             </div>
             <div style="font-weight: 700; color: #10b981; font-size: 13px;">
-                🚀 <strong>Fulfillment Est:</strong> 2 Days Domestic
+                <i class="ph-duotone ph-rocket"></i> <strong>Fulfillment Est:</strong> 2 Days Domestic
             </div>
         </div>
 
@@ -340,18 +341,18 @@ $total = $subtotal + $delivery_charge;
         <?php 
         $status = strtolower($order['status']);
         $stages = [
-            ['key' => 'pending', 'label' => 'Placed 📝', 'num' => 0],
-            ['key' => 'accepted', 'label' => 'Accepted 🤝', 'num' => 1],
-            ['key' => 'packed', 'label' => 'Packed 📦', 'num' => 2],
-            ['key' => 'shipped', 'label' => 'Shipped 🚚', 'num' => 3],
-            ['key' => 'delivered', 'label' => 'Delivered 🤝', 'num' => 4]
+            ['key' => 'pending', 'label' => 'Placed <i class="ph-duotone ph-file-text"></i>', 'num' => 0],
+            ['key' => 'accepted', 'label' => 'Accepted <i class="ph-duotone ph-handshake"></i>', 'num' => 1],
+            ['key' => 'packed', 'label' => 'Packed <i class="ph-duotone ph-package"></i>', 'num' => 2],
+            ['key' => 'shipped', 'label' => 'Shipped <i class="ph-duotone ph-truck"></i>', 'num' => 3],
+            ['key' => 'delivered', 'label' => 'Delivered <i class="ph-duotone ph-handshake"></i>', 'num' => 4]
         ];
         
         if ($status === 'cancelled') {
             echo '<div class="timeline-wrapper">';
             echo '<div class="timeline-title">Logistics Status Timeline</div>';
             echo '<div style="background: rgba(239, 68, 68, 0.08); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 8px; padding: 12px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px;">';
-            echo '❌ Order Cancelled & Items Returned to Stock';
+            echo '<i class="ph-duotone ph-x-circle"></i> Order Cancelled & Items Returned to Stock';
             echo '</div>';
             echo '</div>';
         } else {
@@ -400,7 +401,7 @@ $total = $subtotal + $delivery_charge;
             </thead>
             <tbody>
                 <tr>
-                    <td style="font-weight: 600; color: #0f172a;">🌾 Fresh Harvest - <?php echo htmlspecialchars($order['crop_name']); ?></td>
+                    <td style="font-weight: 600; color: #0f172a;"><i class="ph-duotone ph-plant"></i> Fresh Harvest - <?php echo htmlspecialchars($order['crop_name']); ?></td>
                     <td style="text-align: right; color: #475569;">₹<?php echo $price; ?></td>
                     <td style="text-align: right; color: #475569;"><?php echo $qty; ?> kg</td>
                     <td style="text-align: right; font-weight: 700; color: #0f172a;">₹<?php echo number_format($subtotal); ?></td>
@@ -428,7 +429,7 @@ $total = $subtotal + $delivery_charge;
         <?php if ($order['is_paid'] == 1): ?>
             <div style="margin-top: 30px; border: 1px solid rgba(16, 185, 129, 0.2); padding: 20px; border-radius: 8px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(52, 211, 153, 0.02) 100%); display: flex; align-items: center; justify-content: space-between; gap: 20px;">
                 <div>
-                    <strong style="color: #10b981; display: block; font-size: 14px; text-transform: uppercase; font-family: 'Outfit', sans-serif;">💳 PAYMENT VERIFIED & SETTLED</strong>
+                    <strong style="color: #10b981; display: block; font-size: 14px; text-transform: uppercase; font-family: 'Outfit', sans-serif;"><i class="ph-duotone ph-credit-card"></i> PAYMENT VERIFIED & SETTLED</strong>
                     <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px;">
                         Your payment has been successfully recorded. Transaction Reference ID: <strong><?php echo htmlspecialchars($order['payment_txn']); ?></strong>
                     </span>
@@ -439,7 +440,7 @@ $total = $subtotal + $delivery_charge;
             </div>
         <?php elseif ($status === 'cancelled'): ?>
             <div style="margin-top: 30px; border: 1px solid rgba(239, 68, 68, 0.2); padding: 20px; border-radius: 8px; background: rgba(239, 68, 68, 0.02); text-align: center;">
-                <strong style="color: #ef4444; display: block; font-size: 14px; text-transform: uppercase; font-family: 'Outfit', sans-serif;">❌ ORDER & PAYMENT CANCELLED</strong>
+                <strong style="color: #ef4444; display: block; font-size: 14px; text-transform: uppercase; font-family: 'Outfit', sans-serif;"><i class="ph-duotone ph-x-circle"></i> ORDER & PAYMENT CANCELLED</strong>
                 <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px;">This transaction was cancelled and no payment settlement is required.</span>
             </div>
         <?php else: ?>
@@ -452,7 +453,7 @@ $total = $subtotal + $delivery_charge;
                     <img src="<?php echo $qr_api; ?>" alt="Payment QR" style="width: 80px; height: 80px; display: block;">
                 </div>
                 <div>
-                    <strong style="color: #4f46e5; display: block; font-size: 14px; text-transform: uppercase; font-family: 'Outfit', sans-serif;">⏳ PAYMENT STATUS: PENDING SETTLEMENT</strong>
+                    <strong style="color: #4f46e5; display: block; font-size: 14px; text-transform: uppercase; font-family: 'Outfit', sans-serif;"><i class="ph-duotone ph-hourglass-high"></i> PAYMENT STATUS: PENDING SETTLEMENT</strong>
                     <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px;">
                         Please settle the total amount of <strong>₹<?php echo number_format($total); ?></strong> via UPI. Scan this dynamic code or settle in your <a href="my_orders.php" style="color: #4f46e5; font-weight: 600; text-decoration: underline;">Orders Dashboard</a> to verify.
                     </span>
@@ -475,11 +476,11 @@ $total = $subtotal + $delivery_charge;
                 $verify_url = $base_url . "farmer/verify_delivery.php?order_id=" . $order['id'];
                 $qr_api = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" . urlencode($verify_url);
                 ?>
-                <a href="<?php echo $verify_url; ?>" style="display: block; border: 1px solid #e2e8f0; padding: 6px; border-radius: 4px; background: white;" title="Click to Emulate Mobile Scan 📱">
+                <a href="<?php echo $verify_url; ?>" style="display: block; border: 1px solid #e2e8f0; padding: 6px; border-radius: 4px; background: white;" title="Click to Emulate Mobile Scan <i class="ph-duotone ph-device-mobile"></i>">
                     <img src="<?php echo $qr_api; ?>" alt="Verification QR" style="width: 80px; height: 80px; display: block;">
                 </a>
                 <div>
-                    <strong style="color: #0f766e; display: block; font-size: 13.5px; text-transform: uppercase;">🤝 Delivery Handover verification QR Badge</strong>
+                    <strong style="color: #0f766e; display: block; font-size: 13.5px; text-transform: uppercase;"><i class="ph-duotone ph-handshake"></i> Delivery Handover verification QR Badge</strong>
                     <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px;">Have the farmer scan this barcode during logistics physical handover to settle this trade safely in database. (Click image to simulate scan)</span>
                 </div>
             </div>
@@ -488,7 +489,7 @@ $total = $subtotal + $delivery_charge;
         <!-- Footer -->
         <div style="margin-top: 60px; border-top: 1px solid #f1f5f9; padding-top: 24px; text-align: center; font-size: 12px; color: #94a3b8;">
             <p>This invoice is electronically generated through the AgroNava platform.</p>
-            <p style="margin-top: 4px; font-weight: 500; color: #64748b;">🤝 Directly supporting local farmers and sustainable commerce.</p>
+            <p style="margin-top: 4px; font-weight: 500; color: #64748b;"><i class="ph-duotone ph-handshake"></i> Directly supporting local farmers and sustainable commerce.</p>
         </div>
 
     </div>

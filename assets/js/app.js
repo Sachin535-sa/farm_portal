@@ -5,6 +5,7 @@ function initApp() {
     initializeMarketPriceChart();
     initializeMarketplaceFilters();
     initializeNotifications();
+    initializeMobileNavbar();
     initializeCommunityReporting();
 }
 
@@ -335,6 +336,24 @@ function initializeNotifications() {
     });
 }
 
+function initializeMobileNavbar() {
+    const toggleBtn = document.getElementById("navbar-toggle-btn");
+    const menu = document.getElementById("navbar-menu-container");
+    
+    if (!toggleBtn || !menu) return;
+    
+    toggleBtn.addEventListener("click", (e) => {
+        menu.classList.toggle("active");
+        e.stopPropagation();
+    });
+    
+    document.addEventListener("click", (e) => {
+        if (!toggleBtn.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.remove("active");
+        }
+    });
+}
+
 function markAllNotificationsRead(e) {
     if (e) {
         e.preventDefault();
@@ -401,3 +420,21 @@ function initializeCommunityReporting() {
     });
 }
 
+
+/**
+ * Toggles wishlist state for product cards.
+ */
+function toggleWishlist(btn, cropId) {
+    if (window.event) {
+        window.event.preventDefault();
+        window.event.stopPropagation();
+    }
+    
+    btn.classList.toggle('active');
+    
+    // Animate pop
+    btn.style.transform = 'scale(1.3)';
+    setTimeout(() => {
+        btn.style.transform = '';
+    }, 200);
+}
