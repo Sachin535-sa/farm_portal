@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $requires_otp) {
     <title>Handover Verification | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
     
     <style>
         .celebration-container {

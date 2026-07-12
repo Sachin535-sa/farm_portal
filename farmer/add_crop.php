@@ -178,7 +178,7 @@ if(isset($_POST['save_crop'])){
     <title><?php echo $is_edit ? 'Edit Crop Listing' : 'List New Crop'; ?> | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
     
     <style>
         .auth-logo {

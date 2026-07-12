@@ -22,7 +22,7 @@ $msp_data = [
     <title>Live MSP & Market Prices | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=1.6">
     
     <style>
         .price-table {

@@ -270,7 +270,7 @@ if (!empty($crop_id)) {
     <title>Direct Connection Room | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=1.6">
     
     <style>
         .chat-app {

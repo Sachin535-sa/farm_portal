@@ -106,7 +106,7 @@ $bargains_res = mysqli_query($conn, $bargains_query);
     <title>Buyer Dashboard Console | AgroNava</title>
     
     <!-- Link styles & Fonts -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Chart.js CDN -->

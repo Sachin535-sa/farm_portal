@@ -44,7 +44,7 @@ if (mysqli_num_rows($comp_check) > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Report Damage | AgroNava</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
     <style>
         .reporting-container {
             max-width: 600px;

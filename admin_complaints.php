@@ -71,7 +71,7 @@ $result = mysqli_query($conn, $sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dispute & Claim Management Center | AgroNava Admin</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=1.6">
     <style>
         .admin-nav {
             background: rgba(15, 23, 42, 0.95) !important;

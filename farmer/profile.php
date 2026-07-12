@@ -113,7 +113,7 @@ if ($res_badges) {
     <title><?php echo htmlspecialchars($farmer['name']); ?> Portfolio | AgroNava</title>
     
     <!-- Link styles -->
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css?v=1.6">
     
     <style>
         .profile-header {

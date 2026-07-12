@@ -895,3 +895,104 @@ select.form-control {
     font-weight: 500;
     margin-top: 4px;
 }
+
+/* ==========================================================================
+   MOBILE & MOBILE RESPONSIVENESS OVERRIDES (PHASE 14)
+   ========================================================================== */
+
+/* Fix Dropdown layout completely to avoid pushing content and float cleanly */
+.notif-bell-container {
+    position: relative !important;
+}
+
+.notif-dropdown {
+    position: absolute !important;
+    top: 52px !important;
+    right: 0 !important;
+    width: 350px !important;
+    max-width: calc(100vw - 32px) !important;
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius-md) !important;
+    box-shadow: var(--shadow-lg) !important;
+    z-index: 99999 !important;
+    display: none;
+    flex-direction: column !important;
+    overflow: hidden !important;
+}
+
+.notif-dropdown.show {
+    display: flex !important;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 992px) {
+    /* Navbar stack */
+    .navbar {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        padding: 12px 20px !important;
+        gap: 12px !important;
+    }
+    
+    .navbar-menu {
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+        justify-content: center !important;
+    }
+    
+    /* Layout structural grids */
+    .grid-4, .grid-3, .grid-2 {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 20px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar-brand {
+        justify-content: center;
+        font-size: 20px !important;
+    }
+    
+    .navbar-menu {
+        gap: 8px !important;
+        justify-content: center !important;
+    }
+    
+    .navbar-menu a {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+        background: rgba(15, 118, 110, 0.04) !important;
+        border-radius: 20px !important;
+        font-weight: 600 !important;
+    }
+    
+    /* User badge and button sizing */
+    .user-badge {
+        padding: 4px 8px !important;
+        font-size: 12px !important;
+    }
+    
+    .btn-danger {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+    
+    /* Stats grid */
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+    
+    /* Tables scrollable on smaller screens */
+    .table-wrapper {
+        overflow-x: auto !important;
+        width: 100% !important;
+    }
+    
+    /* Forms structure */
+    .form-row {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+}
