@@ -712,6 +712,14 @@ $result_trending = mysqli_query($conn, $sql_trending);
                     <label class="form-label" for="order-quantity">Quantity to Order (kg)</label>
                     <input class="form-control" type="number" id="order-quantity" name="quantity" min="1" value="1" required>
                 </div>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label class="form-label" for="payment-method">Payment Protocol</label>
+                    <select class="form-control" id="payment-method" name="payment_method" style="background: white; border: 1px solid var(--border); font-weight: 600;" required>
+                        <option value="COD">💵 Cash on Delivery (COD)</option>
+                        <option value="UPI">⚡ Secure UPI Escrow (GPay/Paytm)</option>
+                    </select>
+                </div>
                 
                 <!-- Dynamic Cost Calculation (Handled instantly in app.js!) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 24px; margin-bottom: 24px;">

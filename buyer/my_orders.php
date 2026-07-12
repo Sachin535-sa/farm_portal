@@ -438,6 +438,12 @@ function renderLogisticsTimeline($status) {
                                             Verify & Mark Paid 💳
                                         </button>
                                     </form>
+
+                                    <div style="margin-top: 12px; border-top: 1px dashed rgba(99, 102, 241, 0.15); padding-top: 12px;">
+                                        <a href="payment_gateway.php?order_id=<?php echo $row['id']; ?>" class="btn btn-primary" style="display: flex; justify-content: center; padding: 8px; font-size: 12px; background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%); border: none;">
+                                            ⚡ Open Gateway Checkout (GPay/Paytm)
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         <?php endif; ?>
@@ -493,6 +499,14 @@ function renderLogisticsTimeline($status) {
                             </p>
                         </div>
                         
+                        <!-- Quality Passport -->
+                        <?php if ($status !== 'pending_payment' && $status !== 'cancelled'): ?>
+                            <a class="btn btn-secondary" style="width: 100%; justify-content: center; padding: 10px; font-size: 12.5px; margin-top: 10px; border: 1px solid rgba(16, 185, 129, 0.3) !important; color: #10b981 !important; background: rgba(16, 185, 129, 0.02);" 
+                               href="quality_passport.php?order_id=<?php echo $row['id']; ?>">
+                                🛡️ View Quality Passport Trace
+                            </a>
+                        <?php endif; ?>
+
                         <!-- Invoice PDF trigger link -->
                         <a class="btn btn-secondary" style="width: 100%; justify-content: center; padding: 10px; font-size: 12.5px; margin-top: 10px;" 
                            href="invoice.php?id=<?php echo $row['id']; ?>">

@@ -367,4 +367,34 @@ if ($user_table_check && mysqli_num_rows($user_table_check) > 0) {
     mysqli_query($conn, "UPDATE `users` SET `password` = 'password123' WHERE `email` = 'aniket@buyer.com'");
     mysqli_query($conn, "UPDATE `users` SET `password` = 'password123' WHERE `email` = 'gurpreet@farm.com'");
 }
+
+// ─────────────────────────────────────────────────────────
+// PAYMENTS TABLE MIGRATION
+// ─────────────────────────────────────────────────────────
+mysqli_query($conn, "CREATE TABLE IF NOT EXISTS `payments` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `order_id` INT NOT NULL,
+    `transaction_id` VARCHAR(100) NOT NULL,
+    `payment_method` VARCHAR(50) NOT NULL,
+    `amount` INT NOT NULL,
+    `status` VARCHAR(20) DEFAULT 'success',
+    `paid_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+// ── Check/Add delivery columns to orders ─────────────────────────────
+$col_check_del_partner = mysqli_query($conn, "SHOW COLUMNS FROM `orders` LIKE 'delivery_partner_id'");
+if ($col_check_del_partner && mysqli_num_rows($col_check_del_partner) == 0) {
+    mysqli_query($conn, "ALTER TABLE `orders` ADD COLUMN `delivery_partner_id` INT DEFAULT NULL");
+    mysqli_query($conn, "ALTER TABLE `orders` ADD COLUMN `delivery_proof_image` VARCHAR(255) DEFAULT NULL");
+    mysqli_query($conn, "ALTER TABLE `orders` ADD COLUMN `package_type` VARCHAR(50) DEFAULT 'Standard'");
+}
+
+// ── Seed delivery partner if not exists ──────────────────────────────
+$del_partner_check = mysqli_query($conn, "SELECT id FROM `users` WHERE `email` = 'vijay@delivery.com'");
+if ($del_partner_check && mysqli_num_rows($del_partner_check) == 0) {
+    mysqli_query($conn, "INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `mobile_no`, `distributor_badge`, `distributor_score`) VALUES
+        (4, 'Vijay Kumar (Logistics)', 'vijay@delivery.com', 'password123', 'delivery_partner', '9876543210', 'Standard Partner', 95)");
+} else {
+    mysqli_query($conn, "UPDATE `users` SET `password` = 'password123' WHERE `email` = 'vijay@delivery.com'");
+}
 ?>

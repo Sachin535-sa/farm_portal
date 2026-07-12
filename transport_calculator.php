@@ -1,7 +1,7 @@
 <?php
 /**
  * AgriDirect - Transport Cost Calculation System
- * Provides formulas to calculate the exact transport cost based on distance and weight.
+ * Provides formulas to calculate the exact transport cost based on distance, weight, and packaging.
  */
 
 class TransportCalculator {
@@ -9,37 +9,66 @@ class TransportCalculator {
     private $ratePerKm;
     private $ratePerKg;
 
-    public function __construct($baseFee = 30, $ratePerKm = 5, $ratePerKg = 2) {
-        // Default values as per AgriDirect specification
+    public function __construct($baseFee = 30, $ratePerKm = 8, $ratePerKg = 2) {
         $this->baseFee = $baseFee;
         $this->ratePerKm = $ratePerKm;
         $this->ratePerKg = $ratePerKg;
     }
 
     /**
-     * Formula 1 - Distance Based
-     * Transport Cost = Base Fee + (Distance * Rate Per KM)
+     * Determine packaging type and surcharge based on crop name.
+     */
+    public function getPackagingDetails($cropName) {
+        $name = strtolower($cropName);
+        if (preg_match('/(milk|dairy|butter|cheese)/', $name)) {
+            return [
+                'type' => 'Cold Storage Box',
+                'fee' => 100,
+                'icon' => '❄️'
+            ];
+        } elseif (preg_match('/(tomato|potato|onion|chili|vegetable|veg)/', $name)) {
+            return [
+                'type' => 'Ventilated Box',
+                'fee' => 40,
+                'icon' => '📦'
+            ];
+        } elseif (preg_match('/(apple|mango|banana|orange|grape|fruit)/', $name)) {
+            return [
+                'type' => 'Foam Packing',
+                'fee' => 30,
+                'icon' => '🍎'
+            ];
+        } else {
+            // Default packaging for grains, seeds, etc.
+            return [
+                'type' => 'Jute Bag',
+                'fee' => 20,
+                'icon' => '🌾'
+            ];
+        }
+    }
+
+    /**
+     * Calculate dynamic transport cost based on distance
      */
     public function calculateByDistance($distanceKm) {
         return $this->baseFee + ($distanceKm * $this->ratePerKm);
     }
 
     /**
-     * Formula 2 - Weight Based
-     * Delivery Cost = Weight * Rate Per KG
+     * Calculate dynamic delivery cost based on weight
      */
     public function calculateByWeight($weightKg) {
         return $weightKg * $this->ratePerKg;
     }
 
     /**
-     * Formula 3 - Advanced Combined Formula
-     * Total Delivery Cost = (Distance * KM Rate) + (Weight * Weight Rate)
-     * *Note: Added base fee for consistency, though original formula didn't explicitly mention it in point 6, 
-     * but it's a best practice in logistics. We'll stick to the exact formula: (Distance * KM Rate) + (Weight * Weight Rate)*
+     * Advanced Combined Formula:
+     * Base Fee + (Distance * KM Rate) + (Weight * KG Rate) + Packaging Surcharge
      */
-    public function calculateAdvanced($distanceKm, $weightKg) {
-        return ($distanceKm * $this->ratePerKm) + ($weightKg * $this->ratePerKg);
+    public function calculateAdvanced($distanceKm, $weightKg, $cropName = '') {
+        $pkg = $this->getPackagingDetails($cropName);
+        return $this->baseFee + ($distanceKm * $this->ratePerKm) + ($weightKg * $this->ratePerKg) + $pkg['fee'];
     }
 }
 ?>

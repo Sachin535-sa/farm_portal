@@ -53,11 +53,18 @@ if(isset($_POST['place_order'])) {
                     $final_unit_price = (int)$bargain_row['proposed_price'];
                 }
                 
-                // AgriDirect: Calculate Transport Cost
+                // AgriDirect: Calculate Transport Cost and Packaging Surcharges
                 $transportCalc = new TransportCalculator();
                 $distance_km = rand(5, 50); // Simulating distance for demo
                 $weight_kg = $qty_to_order;
-                $transport_cost = $transportCalc->calculateAdvanced($distance_km, $weight_kg);
+                $transport_cost = $transportCalc->calculateAdvanced($distance_km, $weight_kg, $crop['crop_name']);
+                
+                $pkg_details = $transportCalc->getPackagingDetails($crop['crop_name']);
+                $package_type = mysqli_real_escape_string($conn, $pkg_details['type']);
+                
+                // Read payment method selection
+                $payment_method = isset($_POST['payment_method']) ? mysqli_real_escape_string($conn, $_POST['payment_method']) : 'COD';
+                $order_status = ($payment_method === 'UPI') ? 'pending_payment' : 'pending';
                 
                 // AgriDirect: Generate Delivery OTP & QR Hash
                 $delivery_otp = rand(100000, 999999);
@@ -65,24 +72,26 @@ if(isset($_POST['place_order'])) {
                 $qr_code_hash = md5($qr_data);
                 
                 // 4. Create entry in orders table with historically preserved price and new delivery features
-                $insert_sql = "INSERT INTO orders (buyer_id, crop_id, quantity, price, status, transport_cost, delivery_otp, tracking_status, qr_code_hash, distance_km, weight_kg) 
-                               VALUES ('$buyer_id', '$crop_id', '$qty_to_order', '$final_unit_price', 'pending', '$transport_cost', '$delivery_otp', 'Preparing', '$qr_code_hash', '$distance_km', '$weight_kg')";
+                $insert_sql = "INSERT INTO orders (buyer_id, crop_id, quantity, price, status, transport_cost, delivery_otp, tracking_status, qr_code_hash, distance_km, weight_kg, package_type) 
+                               VALUES ('$buyer_id', '$crop_id', '$qty_to_order', '$final_unit_price', '$order_status', '$transport_cost', '$delivery_otp', 'Preparing', '$qr_code_hash', '$distance_km', '$weight_kg', '$package_type')";
                 mysqli_query($conn, $insert_sql);
                 $order_id = mysqli_insert_id($conn);
                 
-                // 5. Send Real-Time Notifications
+                // 5. Send Real-Time Notifications (Skip billing notification if payment pending)
                 $crop_name_clean = mysqli_real_escape_string($conn, $crop['crop_name']);
                 
-                $buyer_msg = "🛍️ Purchase Successful: You have successfully purchased " . $qty_to_order . " kg of " . $crop['crop_name'] . "!";
-                $buyer_msg_clean = mysqli_real_escape_string($conn, $buyer_msg);
-                mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$buyer_msg_clean')");
-                
-                $otp_msg = "🔐 Delivery OTP for Order #".$order_id.": " . $delivery_otp . " (Keep this safe!)";
-                mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$otp_msg')");
-                
-                $farmer_msg = "🌾 Harvest Sold: Buyer has purchased " . $qty_to_order . " kg of your listed " . $crop['crop_name'] . "!";
-                $farmer_msg_clean = mysqli_real_escape_string($conn, $farmer_msg);
-                mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$farmer_id', '$farmer_msg_clean')");
+                if ($payment_method !== 'UPI') {
+                    $buyer_msg = "🛍️ Purchase Successful: You have successfully purchased " . $qty_to_order . " kg of " . $crop['crop_name'] . "!";
+                    $buyer_msg_clean = mysqli_real_escape_string($conn, $buyer_msg);
+                    mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$buyer_msg_clean')");
+                    
+                    $otp_msg = "🔐 Delivery OTP for Order #".$order_id.": " . $delivery_otp . " (Keep this safe!)";
+                    mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$buyer_id', '$otp_msg')");
+                    
+                    $farmer_msg = "🌾 Harvest Sold: Buyer has purchased " . $qty_to_order . " kg of your listed " . $crop['crop_name'] . "!";
+                    $farmer_msg_clean = mysqli_real_escape_string($conn, $farmer_msg);
+                    mysqli_query($conn, "INSERT INTO notifications (user_id, message) VALUES ('$farmer_id', '$farmer_msg_clean')");
+                }
                 
                 // Trigger low stock warning if new quantity <= 20
                 if ($new_qty <= 20) {
@@ -93,7 +102,12 @@ if(isset($_POST['place_order'])) {
                 
                 // Commit changes
                 mysqli_commit($conn);
-                header("Location: my_orders.php?success=1");
+                
+                if ($payment_method === 'UPI') {
+                    header("Location: payment_gateway.php?order_id=" . $order_id);
+                } else {
+                    header("Location: my_orders.php?success=1");
+                }
                 exit();
             } else {
                 // Stock deficiency
