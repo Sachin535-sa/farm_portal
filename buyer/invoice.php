@@ -464,7 +464,15 @@ $total = $subtotal + $delivery_charge;
         <?php if ($status !== 'delivered' && $status !== 'cancelled'): ?>
             <div class="no-print" style="margin-top: 30px; border: 1px dashed #e2e8f0; padding: 20px; border-radius: 8px; background: #fafafa; display: flex; align-items: center; gap: 20px;">
                 <?php
-                $verify_url = "http://localhost/farm_portal/farmer/verify_delivery.php?order_id=" . $order['id'];
+                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                $host = $_SERVER['HTTP_HOST'];
+                $base_url = $protocol . $host;
+                if (strpos($_SERVER['REQUEST_URI'], '/farm_portal/') !== false) {
+                    $base_url .= '/farm_portal/';
+                } else {
+                    $base_url .= '/';
+                }
+                $verify_url = $base_url . "farmer/verify_delivery.php?order_id=" . $order['id'];
                 $qr_api = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" . urlencode($verify_url);
                 ?>
                 <a href="<?php echo $verify_url; ?>" style="display: block; border: 1px solid #e2e8f0; padding: 6px; border-radius: 4px; background: white;" title="Click to Emulate Mobile Scan 📱">

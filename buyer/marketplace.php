@@ -639,11 +639,18 @@ $result_trending = mysqli_query($conn, $sql_trending);
                                 💬 Negotiate / Chat with Farmer
                             </a>
 
-                            <!-- QR Scan to Order Button -->
                             <?php
-                            $qr_order_url = "http://localhost/farm_portal/buyer/qr_order.php?crop_id={$row['id']}&qty=1&email=" . urlencode($row['farmer_email'] !== '' ? $_SESSION['name'] : '');
+                            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                            $host = $_SERVER['HTTP_HOST'];
+                            $base_url = $protocol . $host;
+                            if (strpos($_SERVER['REQUEST_URI'], '/farm_portal/') !== false) {
+                                $base_url .= '/farm_portal/';
+                            } else {
+                                $base_url .= '/';
+                            }
+                            $qr_order_url = $base_url . "buyer/qr_order.php?crop_id={$row['id']}&qty=1&email=" . urlencode($row['farmer_email'] !== '' ? $_SESSION['name'] : '');
                             $qr_buyer_email = urlencode($_SESSION['name'] ?? '');
-                            $qr_target_url  = "http://localhost/farm_portal/buyer/qr_order.php?crop_id={$row['id']}&qty=1";
+                            $qr_target_url  = $base_url . "buyer/qr_order.php?crop_id={$row['id']}&qty=1";
                             $qr_img_url     = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&color=166534&bgcolor=f0fdf4&data=" . urlencode($qr_target_url);
                             ?>
                             <div style="border: 1px solid rgba(22,163,74,0.2); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 4px;">

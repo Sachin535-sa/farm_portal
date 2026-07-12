@@ -401,7 +401,15 @@ if (isset($_POST['login'])) {
 
         <a href="qr_login.php?role=buyer" class="qr-hex">
             <?php
-            $qr_url = "http://localhost/farm_portal/auth/qr_login.php?role=buyer";
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+            $host = $_SERVER['HTTP_HOST'];
+            $base_url = $protocol . $host;
+            if (strpos($_SERVER['REQUEST_URI'], '/farm_portal/') !== false) {
+                $base_url .= '/farm_portal/';
+            } else {
+                $base_url .= '/';
+            }
+            $qr_url = $base_url . "auth/qr_login.php?role=buyer";
             $qr_api = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=0891b2&bgcolor=ffffff&data=" . urlencode($qr_url);
             ?>
             <img src="<?php echo $qr_api; ?>" alt="QR">

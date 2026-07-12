@@ -464,7 +464,15 @@ function renderLogisticsTimeline($status) {
                             <div style="border-top: 1px dashed var(--border); padding-top: 12px; margin-top: 12px; text-align: center;">
                                 <span style="font-size: 11px; font-weight: 700; color: var(--secondary); display: block; margin-bottom: 6px; text-transform: uppercase;">🤝 Delivery Handover QR Code</span>
                                 <?php
-                                $verify_url = "http://localhost/farm_portal/farmer/verify_delivery.php?order_id=" . $row['id'];
+                                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+                                $host = $_SERVER['HTTP_HOST'];
+                                $base_url = $protocol . $host;
+                                if (strpos($_SERVER['REQUEST_URI'], '/farm_portal/') !== false) {
+                                    $base_url .= '/farm_portal/';
+                                } else {
+                                    $base_url .= '/';
+                                }
+                                $verify_url = $base_url . "farmer/verify_delivery.php?order_id=" . $row['id'];
                                 $qr_api = "https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=" . urlencode($verify_url);
                                 ?>
                                 <a href="<?php echo $verify_url; ?>" style="display: inline-block; cursor: pointer; border: 1px solid var(--border); padding: 8px; border-radius: var(--radius-sm); background: white;" title="Click to Emulate Scan">
