@@ -297,7 +297,7 @@ if ($status === 'delivered') $step = 4; // Delivered
                             ⏳ Awaiting final OTP delivery authorization handshake.
                         </p>
                         <div style="margin-top: 12px; background: rgba(52, 211, 153, 0.05); border: 1px dashed rgba(52, 211, 153, 0.2); padding: 12px; border-radius: 8px; font-size: 13px; color: #34d399;">
-                            🔑 Your Secure Delivery Verification OTP: <b><?php echo htmlspecialchars($order['delivery_otp']); ?></b>
+                            🔑 Your Secure Delivery Verification OTP: <b><?php echo htmlspecialchars($order['delivery_otp'] ?? 'N/A'); ?></b>
                         </div>
                     <?php } ?>
                 </div>
