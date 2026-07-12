@@ -18,7 +18,7 @@ if (!isset($_GET['order_id'])) {
 $order_id = mysqli_real_escape_string($conn, $_GET['order_id']);
 
 // Fetch order details for payment validation
-$order_query = mysqli_query($conn, "SELECT o.*, c.crop_name, c.price as crop_price, u.name as farmer_name 
+$order_query = mysqli_query($conn, "SELECT o.*, c.crop_name, c.price as crop_price, c.farmer_id, u.name as farmer_name 
                                     FROM orders o 
                                     JOIN crops c ON o.crop_id = c.id 
                                     JOIN users u ON c.farmer_id = u.id
