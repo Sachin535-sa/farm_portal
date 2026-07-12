@@ -267,13 +267,13 @@ $orders_query = mysqli_query($conn, "SELECT o.*, c.crop_name, f.name as farmer_n
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 14px;">
                         <div>
                             <h4 style="color: #38bdf8; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">1. Pickup (Grower)</h4>
-                            <div style="font-weight: 700; margin-bottom: 4px;"><?php echo htmlspecialchars($row['farmer_name']); ?></div>
-                            <div style="color: #94a3b8; line-height: 1.4;"><?php echo htmlspecialchars($row['farmer_address']); ?></div>
+                            <div style="font-weight: 700; margin-bottom: 4px;"><?php echo htmlspecialchars($row['farmer_name'] ?? ''); ?></div>
+                            <div style="color: #94a3b8; line-height: 1.4;"><?php echo htmlspecialchars($row['farmer_address'] ?? ''); ?></div>
                         </div>
                         <div>
                             <h4 style="color: #38bdf8; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">2. Drop-off (Buyer)</h4>
-                            <div style="font-weight: 700; margin-bottom: 4px;"><?php echo htmlspecialchars($row['buyer_name']); ?></div>
-                            <div style="color: #94a3b8; line-height: 1.4;"><?php echo htmlspecialchars($row['buyer_address']); ?></div>
+                            <div style="font-weight: 700; margin-bottom: 4px;"><?php echo htmlspecialchars($row['buyer_name'] ?? ''); ?></div>
+                            <div style="color: #94a3b8; line-height: 1.4;"><?php echo htmlspecialchars($row['buyer_address'] ?? ''); ?></div>
                         </div>
                     </div>
 
