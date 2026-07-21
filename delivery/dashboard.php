@@ -11,6 +11,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != "delivery_partner") {
 $partner_id = $_SESSION['user_id'];
 $partner_name = $_SESSION['name'];
 
+// Calculate total driver earnings
+$earnings_q = mysqli_query($conn, "SELECT SUM(transport_cost) as total_earnings FROM orders WHERE delivery_partner_id = '$partner_id' AND status = 'delivered'");
+$earnings_row = mysqli_fetch_assoc($earnings_q);
+$total_earnings = floatval($earnings_row['total_earnings'] ?? 0.0);
+
 $message = "";
 $success_msg = "";
 
@@ -266,6 +271,9 @@ $orders_query = mysqli_query($conn, "SELECT o.*, c.crop_name, f.name as farmer_n
             <span>☰</span>
         </button>
         <div class="navbar-menu" id="navbar-menu-container">
+            <span class="user-badge" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); font-weight: 700;">
+                💰 Earnings: ₹<?php echo number_format($total_earnings, 2); ?>
+            </span>
             <span class="user-badge" style="background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2);">
                 Driver: <?php echo htmlspecialchars($partner_name); ?>
             </span>
@@ -293,7 +301,7 @@ $orders_query = mysqli_query($conn, "SELECT o.*, c.crop_name, f.name as farmer_n
                     $badge_class = $is_transit ? 'badge-transit' : 'badge-pending';
                     $status_label = $is_transit ? 'In Transit' : 'Awaiting Pickup';
             ?>
-                <div class="order-card">
+                <div class="order-card" style="cursor: pointer;" onclick="selectShipment(this, <?php echo $row['id']; ?>, <?php echo htmlspecialchars($row['delivery_route'] ?: 'null'); ?>, <?php echo htmlspecialchars($row['delivery_details'] ?: 'null'); ?>, '<?php echo $row['tracking_status']; ?>')">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                         <span style="font-size: 18px; font-weight: 800; color: white;">Order #<?php echo $row['id']; ?></span>
                         <span class="badge-status <?php echo $badge_class; ?>"><?php echo $status_label; ?></span>
@@ -375,35 +383,66 @@ $orders_query = mysqli_query($conn, "SELECT o.*, c.crop_name, f.name as farmer_n
 
         <!-- Right Side: Navigation Mapping & Optimization -->
         <div>
-            <h3 style="font-size: 20px; font-family: 'Outfit', sans-serif; margin-bottom: 20px;">Route Optimization Engine</h3>
+            <h3 style="font-size: 20px; font-family: 'Outfit', sans-serif; margin-bottom: 20px; color: white;">Route Optimization Engine</h3>
             
-            <div class="map-mock">
-                <!-- Visual Map Simulator -->
-                <div style="position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, #1e293b 10%, #0f172a 90%); opacity: 0.9;"></div>
-                
-                <!-- Farm Pin -->
-                <div class="map-pin" style="top: 60%; left: 15%; color: #fbbf24;"><i class='ph-duotone ph-tractor'></i></div>
-                <div style="position: absolute; top: 72%; left: 12%; font-size: 11px; font-weight: 700; color: #94a3b8;">Punjab Farm Hub</div>
-                
-                <!-- Route Path -->
-                <div class="map-line"></div>
-                
-                <!-- Destination Pin -->
-                <div class="map-pin" style="top: 35%; right: 15%; color: #38bdf8;"><i class='ph-duotone ph-buildings'></i></div>
-                <div style="position: absolute; top: 47%; right: 12%; font-size: 11px; font-weight: 700; color: #94a3b8;">Urban Warehouse Hub</div>
+            <!-- Route Timeline Stepper Placeholder -->
+            <div id="driver-stepper-placeholder" style="background: rgba(30, 41, 59, 0.2); padding: 40px; border-radius: 12px; text-align: center; border: 1px dashed rgba(255, 255, 255, 0.08); margin-bottom: 24px;">
+                <span style="font-size: 40px; display: block; margin-bottom: 12px;"><i class='ph-duotone ph-map-pin'></i></span>
+                <h3 style="font-size: 16px; color: #94a3b8;">No Route Loaded</h3>
+                <p style="color: #64748b; font-size: 13px; margin-top: 4px;">Click an active assignment card on the left to display its routing details.</p>
+            </div>
 
-                <div style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10; background: rgba(15, 23, 42, 0.85); padding: 10px 20px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 12px; font-weight: 600; text-align: center; color: #38bdf8; backdrop-filter: blur(10px); white-space: nowrap;">
-                    <i class='ph-duotone ph-rocket'></i> Optimal Path Sequenced (ETA: ~1h 45m)
+            <!-- Visual Logistics Tracker Stepper -->
+            <div id="driver-stepper-container" style="background: rgba(30, 41, 59, 0.45); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--radius-md); padding: 24px 16px; margin-bottom: 24px; display: none;">
+                <h4 style="font-size: 15px; margin: 0 0 20px 0; color: white; display: flex; align-items: center; gap: 6px;">
+                    <i class="ph-duotone ph-map-pin" style="color: #38bdf8; font-size: 18px;"></i> Live Shipment Progress Stepper
+                </h4>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; position: relative; padding: 20px 0;">
+                    <!-- Connector Line -->
+                    <div style="position: absolute; top: 38px; left: 10%; right: 10%; height: 4px; background: rgba(255, 255, 255, 0.1); z-index: 1;"></div>
+                    <!-- Active Progress -->
+                    <div id="driver-progress-bar" style="position: absolute; top: 38px; left: 10%; width: 0%; height: 4px; background: linear-gradient(to right, #38bdf8, #10b981); z-index: 2; transition: width 0.4s ease;"></div>
+                    
+                    <!-- Node 1: Farmer Pickup -->
+                    <div id="d-node-1" style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 22%; text-align: center; opacity: 0.4; transition: opacity 0.3s ease;">
+                        <div style="width: 38px; height: 38px; border-radius: 50%; background: #475569; color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: background 0.3s ease;">🌾</div>
+                        <span style="font-weight: 700; font-size: 11px; margin-top: 8px; color: #f1f5f9; display: block;">Farm Origin</span>
+                        <span style="font-size: 9.5px; color: #94a3b8; margin-top: 2px; display: block;">Awaiting Pickup</span>
+                    </div>
+
+                    <!-- Node 2: Collection Hub -->
+                    <div id="d-node-2" style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 26%; text-align: center; opacity: 0.4; transition: opacity 0.3s ease;">
+                        <div style="width: 38px; height: 38px; border-radius: 50%; background: #475569; color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: background 0.3s ease;">🏢</div>
+                        <span style="font-weight: 700; font-size: 11px; margin-top: 8px; color: #f1f5f9; display: block;" id="d-node-cc-name">Collection Hub</span>
+                        <span style="font-size: 9.5px; color: #94a3b8; margin-top: 2px; display: block;" id="d-node-cc-dist">0.00 km</span>
+                    </div>
+
+                    <!-- Node 3: Warehouse -->
+                    <div id="d-node-3" style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 26%; text-align: center; opacity: 0.4; transition: opacity 0.3s ease;">
+                        <div style="width: 38px; height: 38px; border-radius: 50%; background: #475569; color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: background 0.3s ease;">🏬</div>
+                        <span style="font-weight: 700; font-size: 11px; margin-top: 8px; color: #f1f5f9; display: block;" id="d-node-wh-name">Central Depot</span>
+                        <span style="font-size: 9.5px; color: #94a3b8; margin-top: 2px; display: block;" id="d-node-wh-dist">0.00 km</span>
+                    </div>
+
+                    <!-- Node 4: Buyer -->
+                    <div id="d-node-4" style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 22%; text-align: center; opacity: 0.4; transition: opacity 0.3s ease;">
+                        <div style="width: 38px; height: 38px; border-radius: 50%; background: #475569; color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; transition: background 0.3s ease;">🏠</div>
+                        <span style="font-weight: 700; font-size: 11px; margin-top: 8px; color: #f1f5f9; display: block;">Destination</span>
+                        <span style="font-size: 9.5px; color: #94a3b8; margin-top: 2px; display: block;" id="d-node-buyer-dist">0.00 km</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Route Performance Details Card -->
-            <div class="glass-card" style="background: rgba(30, 41, 59, 0.2); border-color: rgba(255, 255, 255, 0.08); margin-top: 24px; padding: 20px;">
-                <h4 style="font-size: 15px; margin-bottom: 12px; color: white;">Logistics Efficiency Diagnostics</h4>
-                <ul style="padding-left: 18px; font-size: 13px; color: #94a3b8; line-height: 1.8;">
-                    <li><b>Route Length:</b> Dynamic distance mapped.</li>
-                    <li><b>Packaging:</b> Categorized cargo protection.</li>
-                    <li><b>Dynamic Fuel index:</b> Standard local rates applied.</li>
+            <div class="glass-card" style="background: rgba(30, 41, 59, 0.35); border-color: rgba(255, 255, 255, 0.08); padding: 20px;">
+                <h4 style="font-size: 15px; margin: 0 0 12px 0; color: white; display: flex; align-items: center; gap: 6px;">
+                    <i class="ph-duotone ph-gauge" style="color: #38bdf8;"></i> Logistics Efficiency Diagnostics
+                </h4>
+                <ul id="diagnostics-list" style="padding-left: 18px; font-size: 13px; color: #94a3b8; line-height: 1.8; margin: 0;">
+                    <li><b>Route Length:</b> Click a shipment card to map routing.</li>
+                    <li><b>Packaging Cargo Protection:</b> Click a shipment card.</li>
+                    <li><b>Dynamic Fuel Index Adjuster:</b> Click a shipment card.</li>
                 </ul>
             </div>
         </div>
@@ -412,5 +451,114 @@ $orders_query = mysqli_query($conn, "SELECT o.*, c.crop_name, f.name as farmer_n
 
     <!-- Scripting integration -->
     <script src="../assets/js/app.js"></script>
+    <script>
+    function selectShipment(card, orderId, route, details, trackingStatus) {
+        // Highlight active card
+        document.querySelectorAll('.order-card').forEach(function(c) {
+            c.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+            c.style.boxShadow = 'none';
+        });
+        card.style.borderColor = 'rgba(56, 189, 248, 0.5)';
+        card.style.boxShadow = '0 0 25px rgba(56, 189, 248, 0.2)';
+
+        var placeholder = document.getElementById('driver-stepper-placeholder');
+        if (placeholder) placeholder.style.display = 'none';
+        
+        var container = document.getElementById('driver-stepper-container');
+        if (container) container.style.display = 'block';
+
+        var ccName = details ? (details.collection_center_name || "Mohali Hub") : "Mohali Hub";
+        var whName = details ? (details.warehouse_name || "Chandigarh Depot") : "Chandigarh Depot";
+
+        // Update Stepper Text/Distance
+        if (details) {
+            document.getElementById('d-node-cc-name').textContent = ccName;
+            document.getElementById('d-node-cc-dist').textContent = parseFloat(details.distance_farm_to_cc || 0).toFixed(2) + " km";
+
+            document.getElementById('d-node-wh-name').textContent = whName;
+            document.getElementById('d-node-wh-dist').textContent = parseFloat(details.distance_cc_to_wh || 0).toFixed(2) + " km";
+
+            document.getElementById('d-node-buyer-dist').textContent = parseFloat(details.distance_wh_to_buyer || 0).toFixed(2) + " km";
+        }
+
+        // Highlight nodes based on tracking status
+        var nodes = [
+            document.getElementById('d-node-1'),
+            document.getElementById('d-node-2'),
+            document.getElementById('d-node-3'),
+            document.getElementById('d-node-4')
+        ];
+
+        // Reset all nodes
+        nodes.forEach(function(node) {
+            if (!node) return;
+            node.style.opacity = '0.4';
+            var indicator = node.querySelector('div');
+            if (indicator) {
+                indicator.style.background = '#475569';
+                indicator.style.boxShadow = 'none';
+            }
+        });
+
+        var progressWidth = '0%';
+        var activeCount = 1;
+
+        if (trackingStatus === 'At Collection Center') {
+            activeCount = 2;
+            progressWidth = '38%';
+        } else if (trackingStatus === 'At Warehouse') {
+            activeCount = 3;
+            progressWidth = '71%';
+        } else if (trackingStatus === 'Out for Delivery' || trackingStatus === 'Delivered') {
+            activeCount = 4;
+            progressWidth = '100%';
+        } else {
+            activeCount = 1;
+            progressWidth = '0%';
+        }
+
+        // Apply visual states
+        for (var i = 0; i < activeCount; i++) {
+            if (!nodes[i]) continue;
+            nodes[i].style.opacity = '1';
+            var indicator = nodes[i].querySelector('div');
+            if (indicator) {
+                if (i === activeCount - 1) {
+                    indicator.style.background = '#38bdf8';
+                    indicator.style.boxShadow = '0 0 14px rgba(56, 189, 248, 0.6)';
+                } else {
+                    indicator.style.background = '#10b981';
+                    indicator.style.boxShadow = '0 0 10px rgba(16, 185, 129, 0.4)';
+                }
+            }
+        }
+        
+        var progressBar = document.getElementById('driver-progress-bar');
+        if (progressBar) progressBar.style.width = progressWidth;
+
+        // Update Diagnostics UI Card
+        if (details) {
+            var carbon = parseFloat(details.carbon_footprint_kg).toFixed(2);
+            var packagingStr = details.packaging_type + " (₹" + details.packaging_fee + ")";
+            var fuelStr = "₹" + parseFloat(details.fuel_adjustment).toFixed(2) + " (" + details.fuel_type.toUpperCase() + ")";
+            document.getElementById('diagnostics-list').innerHTML = `
+                <li>🏁 <b>Total Route Length:</b> ${details.total_distance_km} km</li>
+                <li>📦 <b>Packaging Cargo Protection:</b> ${packagingStr}</li>
+                <li>⛽ <b>Dynamic Fuel Index Adjuster:</b> ${fuelStr}</li>
+                <li>🌱 <b>Carbon Footprint:</b> ${carbon} kg CO2e</li>
+                <li>🚀 <b>Priority Level:</b> ${details.delivery_priority.toUpperCase()}</li>
+                <li>⏱️ <b>ETA Window:</b> ${details.estimated_delivery_time || 'Pending'}</li>
+            `;
+        }
+    }
+
+    // Auto-select first shipment on load
+    window.addEventListener('DOMContentLoaded', function() {
+        var firstCard = document.querySelector('.order-card');
+        if (firstCard) {
+            firstCard.click();
+        }
+    });
+    </script>
 </body>
 </html>

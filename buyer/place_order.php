@@ -54,11 +54,46 @@ if(isset($_POST['place_order'])) {
                 }
                 
                 // AgriDirect: Calculate Transport Cost and Packaging Surcharges
+                $distance_km = isset($_POST['distance_km']) ? floatval($_POST['distance_km']) : 15.0;
+                $vehicle_type = isset($_POST['vehicle_type']) ? mysqli_real_escape_string($conn, $_POST['vehicle_type']) : 'bike';
+                $delivery_priority = isset($_POST['delivery_priority']) ? mysqli_real_escape_string($conn, $_POST['delivery_priority']) : 'standard';
+                $road_condition = isset($_POST['road_condition']) ? mysqli_real_escape_string($conn, $_POST['road_condition']) : 'good';
+                $location_type = isset($_POST['location_type']) ? mysqli_real_escape_string($conn, $_POST['location_type']) : 'urban';
+                $weather = isset($_POST['weather']) ? mysqli_real_escape_string($conn, $_POST['weather']) : 'clear';
+                $weight_kg = floatval($qty_to_order);
+                $order_value = $qty_to_order * $final_unit_price;
+
+                // Grower coords resolve
+                $grower_lat = 30.7046;
+                $grower_lng = 76.7179;
+                $grower_q = mysqli_query($conn, "SELECT u.latitude, u.longitude FROM users u WHERE u.id = '{$crop['farmer_id']}' LIMIT 1");
+                if ($grower_q && $grower_row = mysqli_fetch_assoc($grower_q)) {
+                    if (!empty($grower_row['latitude']) && floatval($grower_row['latitude']) != 0) {
+                        $grower_lat = floatval($grower_row['latitude']);
+                        $grower_lng = floatval($grower_row['longitude']);
+                    }
+                }
+
                 $transportCalc = new TransportCalculator();
-                $distance_km = rand(5, 50); // Simulating distance for demo
-                $weight_kg = $qty_to_order;
-                $transport_cost = $transportCalc->calculateAdvanced($distance_km, $weight_kg, $crop['crop_name']);
-                
+                $calc_result = $transportCalc->calculateDynamicDelivery($conn, [
+                    'distance_km' => $distance_km,
+                    'weight_kg' => $weight_kg,
+                    'vehicle_type' => $vehicle_type,
+                    'delivery_priority' => $delivery_priority,
+                    'road_condition' => $road_condition,
+                    'location_type' => $location_type,
+                    'crop_name' => $crop['crop_name'],
+                    'order_value' => $order_value,
+                    'weather' => $weather,
+                    'grower_lat' => $grower_lat,
+                    'grower_lng' => $grower_lng
+                ]);
+
+                $calc_result['delivery_address_text'] = isset($_POST['delivery_address_text']) ? mysqli_real_escape_string($conn, $_POST['delivery_address_text']) : '';
+
+                $transport_cost = $calc_result['final_delivery_fee'];
+                $delivery_details_json = mysqli_real_escape_string($conn, json_encode($calc_result));
+
                 $pkg_details = $transportCalc->getPackagingDetails($crop['crop_name']);
                 $package_type = mysqli_real_escape_string($conn, $pkg_details['type']);
                 
@@ -71,9 +106,35 @@ if(isset($_POST['place_order'])) {
                 $qr_data = $buyer_id . "-" . $crop_id . "-" . time() . "-" . rand(100,999);
                 $qr_code_hash = md5($qr_data);
                 
+                // Multi-stage route array
+                $delivery_route_data = mysqli_real_escape_string($conn, json_encode([
+                    ['name' => 'Grower Farm', 'lat' => $grower_lat, 'lng' => $grower_lng],
+                    ['name' => $calc_result['collection_center_name'], 'lat' => 30.7046, 'lng' => 76.7179],
+                    ['name' => $calc_result['warehouse_name'], 'lat' => 30.7333, 'lng' => 76.7794]
+                ]));
+
+                $delivery_distance = $calc_result['total_distance_km'];
+                $delivery_zone = $calc_result['delivery_zone'];
+                $fuel_adjustment = $calc_result['fuel_adjustment'];
+                $estimated_delivery_time = $calc_result['estimated_delivery_time'];
+                $estimated_arrival = date("Y-m-d H:i:s", strtotime("+".$calc_result['travel_minutes']." minutes"));
+                $warehouse_id = $calc_result['warehouse_id'];
+                $collection_center_id = $calc_result['collection_center_id'];
+
                 // 4. Create entry in orders table with historically preserved price and new delivery features
-                $insert_sql = "INSERT INTO orders (buyer_id, crop_id, quantity, price, status, transport_cost, delivery_otp, tracking_status, qr_code_hash, distance_km, weight_kg, package_type) 
-                               VALUES ('$buyer_id', '$crop_id', '$qty_to_order', '$final_unit_price', '$order_status', '$transport_cost', '$delivery_otp', 'Preparing', '$qr_code_hash', '$distance_km', '$weight_kg', '$package_type')";
+                $insert_sql = "INSERT INTO orders (
+                    buyer_id, crop_id, quantity, price, status, transport_cost, delivery_otp, 
+                    tracking_status, qr_code_hash, distance_km, weight_kg, package_type, 
+                    delivery_details, vehicle_type, delivery_priority, road_condition,
+                    delivery_distance, delivery_zone, fuel_adjustment, estimated_delivery_time, 
+                    estimated_arrival, delivery_route, warehouse_id, collection_center_id
+                ) VALUES (
+                    '$buyer_id', '$crop_id', '$qty_to_order', '$final_unit_price', '$order_status', '$transport_cost', '$delivery_otp', 
+                    'Preparing', '$qr_code_hash', '$distance_km', '$weight_kg', '$package_type', 
+                    '$delivery_details_json', '$vehicle_type', '$delivery_priority', '$road_condition',
+                    '$delivery_distance', '$delivery_zone', '$fuel_adjustment', '$estimated_delivery_time', 
+                    '$estimated_arrival', '$delivery_route_data', '$warehouse_id', '$collection_center_id'
+                )";
                 mysqli_query($conn, $insert_sql);
                 $order_id = mysqli_insert_id($conn);
                 

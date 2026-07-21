@@ -194,6 +194,9 @@ $recent_orders = mysqli_query($conn, $recent_orders_sql);
                     <span style="background: #ef4444; color: white; padding: 2px 6px; border-radius: 20px; font-size: 11px; margin-left: auto;"><?php echo $pending_complaints; ?></span>
                 <?php } ?>
             </a>
+            <a href="delivery_pricing.php" class="sidebar-link">
+                <i class='ph-duotone ph-truck'></i> Delivery Pricing
+            </a>
             <a href="#" class="sidebar-link">
                 <i class='ph-duotone ph-users'></i> User Directory
             </a>

@@ -25,6 +25,20 @@ if ($port !== null) {
     }
 }
 
+// Robust fallback: if configured connection fails and it wasn't already local, try local XAMPP ports
+if (!$conn && $host !== '127.0.0.1' && $host !== 'localhost') {
+    $conn = @mysqli_connect('127.0.0.1', 'root', '', $db, 3307);
+    if (!$conn) {
+        $conn = @mysqli_connect('127.0.0.1', 'root', '', $db, 3306);
+    }
+    if (!$conn) {
+        $conn = @mysqli_connect('localhost', 'root', '', $db, 3307);
+    }
+    if (!$conn) {
+        $conn = @mysqli_connect('localhost', 'root', '', $db, 3306);
+    }
+}
+
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
@@ -317,6 +331,17 @@ if ($col_check_trends && mysqli_num_rows($col_check_trends) == 0) {
 }
 
 // ── Add mobile_no, upi_id, and distributor columns to users if missing ──
+// Ensure 'delivery_partner' is in the users role enum definition
+mysqli_query($conn, "ALTER TABLE `users` MODIFY COLUMN `role` ENUM('farmer','buyer','admin','delivery_partner') DEFAULT 'buyer'");
+
+// Align Admin ID to 99 if it is currently ID 1 to prevent key collision with Rajesh Kumar
+$admin_pk_check = mysqli_query($conn, "SELECT id FROM `users` WHERE `email` = 'admin@gmail.com' AND `id` = 1");
+if ($admin_pk_check && mysqli_num_rows($admin_pk_check) > 0) {
+    mysqli_query($conn, "SET FOREIGN_KEY_CHECKS = 0");
+    mysqli_query($conn, "UPDATE `users` SET `id` = 99 WHERE `id` = 1 AND `email` = 'admin@gmail.com'");
+    mysqli_query($conn, "SET FOREIGN_KEY_CHECKS = 1");
+}
+
 $col_check_users_ext = mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'mobile_no'");
 if ($col_check_users_ext && mysqli_num_rows($col_check_users_ext) == 0) {
     mysqli_query($conn, "ALTER TABLE `users` ADD COLUMN `mobile_no` VARCHAR(20) DEFAULT NULL");
@@ -379,6 +404,21 @@ mysqli_query($conn, "CREATE TABLE IF NOT EXISTS `payments` (
     `amount` INT NOT NULL,
     `status` VARCHAR(20) DEFAULT 'success',
     `paid_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+// ─────────────────────────────────────────────────────────
+// ORDER_TRACKING TABLE MIGRATION
+// ─────────────────────────────────────────────────────────
+mysqli_query($conn, "CREATE TABLE IF NOT EXISTS `order_tracking` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `order_id` int(11) NOT NULL,
+    `tracking_status` varchar(100) NOT NULL,
+    `location` varchar(255) DEFAULT NULL,
+    `updated_by_role` varchar(50) DEFAULT NULL,
+    `updated_by_id` int(11) DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    PRIMARY KEY (`id`),
+    KEY `order_id` (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
 // ── Check/Add delivery columns to orders ─────────────────────────────

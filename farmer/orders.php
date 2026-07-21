@@ -174,10 +174,12 @@ if(isset($_GET['update_id']) && isset($_GET['status'])){
 }
 
 // Fetch all orders placed for this Farmer's crops
-$sql = "SELECT o.*, c.crop_name, o.price, u.name as buyer_name, u.email as buyer_email 
+$sql = "SELECT o.*, c.crop_name, o.price, u.name as buyer_name, u.email as buyer_email,
+        dp.name as delivery_partner_name
         FROM orders o
         JOIN crops c ON o.crop_id = c.id
         JOIN users u ON o.buyer_id = u.id
+        LEFT JOIN users dp ON o.delivery_partner_id = dp.id
         WHERE c.farmer_id = '$farmer_id'
         ORDER BY o.id DESC";
 
@@ -399,6 +401,48 @@ function renderLogisticsTimeline($status) {
                         
                         <!-- Render the logistics timeline graphic -->
                         <?php renderLogisticsTimeline($row['status']); ?>
+
+                        <!-- Dynamic Logistics Routing & Dispatch Info -->
+                        <?php
+                        $cc_name = 'Mohali Agribusiness Center';
+                        $wh_name = 'Chandigarh Central Storage';
+                        if (!empty($row['collection_center_id'])) {
+                            $cc_q = mysqli_query($conn, "SELECT name FROM collection_centers WHERE id = '{$row['collection_center_id']}' LIMIT 1");
+                            if ($cc_q && $cc_row = mysqli_fetch_assoc($cc_q)) {
+                                $cc_name = $cc_row['name'];
+                            }
+                        }
+                        if (!empty($row['warehouse_id'])) {
+                            $wh_q = mysqli_query($conn, "SELECT name FROM warehouses WHERE id = '{$row['warehouse_id']}' LIMIT 1");
+                            if ($wh_q && $wh_row = mysqli_fetch_assoc($wh_q)) {
+                                $wh_name = $wh_row['name'];
+                            }
+                        }
+                        ?>
+                        <div style="background: rgba(15, 118, 110, 0.04); border: 1px solid rgba(15, 118, 110, 0.12); border-radius: var(--radius-sm); padding: 12px; margin-top: 14px; margin-bottom: 14px; font-size: 12.5px; line-height: 1.45; text-align: left;">
+                            <h4 style="font-size: 13px; color: var(--primary-hover); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; font-weight:700;">
+                                <i class="ph-duotone ph-truck"></i> Logistics Dispatch & Routing
+                            </h4>
+                            <div>🏢 Drop-off Hub: <strong><?php echo htmlspecialchars($cc_name); ?></strong></div>
+                            <div>🏬 Regional Warehouse: <strong><?php echo htmlspecialchars($wh_name); ?></strong></div>
+                            <div>🚚 Assigned Vehicle: <strong style="text-transform: capitalize; color: var(--secondary);"><?php echo str_replace('_', ' ', htmlspecialchars($row['vehicle_type'])); ?></strong></div>
+                            <div>🚦 Priority Level: <span style="font-weight: 700; color: #d97706;"><?php echo ucfirst(htmlspecialchars($row['delivery_priority'])); ?></span></div>
+                            <div>👤 Delivery Partner: <strong style="color: var(--secondary);"><?php echo htmlspecialchars($row['delivery_partner_name'] ?? 'Awaiting Driver Matching 📳'); ?></strong></div>
+                            <?php
+                            $pickup_schedule = "Standard Buffer Window (12:00 PM - 06:00 PM)";
+                            if ($row['delivery_priority'] === 'urgent') {
+                                $pickup_schedule = "Urgent Priority Rush (Morning 08:00 AM - 12:00 PM)";
+                            } elseif ($row['delivery_priority'] === 'express') {
+                                $pickup_schedule = "Express Priority Window (10:00 AM - 02:00 PM)";
+                            } elseif ($row['delivery_priority'] === 'same_day') {
+                                $pickup_schedule = "Same Day Dispatch Window (02:00 PM - 06:00 PM)";
+                            }
+                            ?>
+                            <div>📅 Pickup Schedule: <strong><?php echo $pickup_schedule; ?></strong></div>
+                            <div style="border-top: 1px dashed rgba(15, 118, 110, 0.15); padding-top: 4px; margin-top: 4px;">
+                                ⏱️ Expected Pickup Window: <strong style="color: var(--secondary);"><?php echo htmlspecialchars($row['estimated_delivery_time'] ?? 'Pending allocation'); ?></strong>
+                            </div>
+                        </div>
                         
                         <!-- Buyer connection details panel -->
                         <div style="background: var(--light-bg); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 20px;">

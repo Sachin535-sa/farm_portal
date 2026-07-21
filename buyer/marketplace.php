@@ -689,7 +689,23 @@ $result_trending = mysqli_query($conn, $sql_trending);
 
         <?php } ?>
 
-    </div>
+    <?php
+    $cc_options = "";
+    $cc_q = mysqli_query($conn, "SELECT id, name, latitude, longitude FROM collection_centers ORDER BY name ASC");
+    if ($cc_q) {
+        while ($cc_r = mysqli_fetch_assoc($cc_q)) {
+            $cc_options .= "<option value='{$cc_r['id']}' data-lat='{$cc_r['latitude']}' data-lng='{$cc_r['longitude']}'>{$cc_r['name']}</option>";
+        }
+    }
+
+    $wh_options = "";
+    $wh_q = mysqli_query($conn, "SELECT id, name, latitude, longitude FROM warehouses ORDER BY name ASC");
+    if ($wh_q) {
+        while ($wh_r = mysqli_fetch_assoc($wh_q)) {
+            $wh_options .= "<option value='{$wh_r['id']}' data-lat='{$wh_r['latitude']}' data-lng='{$wh_r['longitude']}'>{$wh_r['name']}</option>";
+        }
+    }
+    ?>
 
     <!-- Stunning Frosted Order Pop-up Drawer (Wow Interactivity!) -->
     <div class="modal-overlay" id="buy-modal">
@@ -723,7 +739,171 @@ $result_trending = mysqli_query($conn, $sql_trending);
                         <option value="UPI">⚡ Secure UPI Escrow (GPay/Paytm)</option>
                     </select>
                 </div>
-                
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label class="form-label" for="delivery-address-text">🏠 Delivery Address & Landmark</label>
+                    <input class="form-control" type="text" id="delivery-address-text" name="delivery_address_text" placeholder="E.g., Sector 17, House 42A, near Rose Garden, Chandigarh" style="border: 1px solid var(--border); font-weight: 500;" required>
+                </div>
+
+                <div class="form-group" style="margin-top: 16px;">
+                    <label class="form-label" for="delivery-priority">Delivery Priority</label>
+                    <select class="form-control" id="delivery-priority" name="delivery_priority" style="background: white; border: 1px solid var(--border); font-weight: 600;" required>
+                        <option value="standard" selected>🟢 Standard Delivery</option>
+                        <option value="same_day">🟡 Same Day Delivery</option>
+                        <option value="express">🟠 Express Delivery (Faster)</option>
+                        <option value="urgent">🔴 Urgent Delivery (Same Day Rush)</option>
+                    </select>
+                </div>
+
+                <!-- Hidden logistics parameters resolved automatically by backend and Leaflet dragging -->
+                <input type="hidden" id="vehicle-type" name="vehicle_type" value="bike">
+                <input type="hidden" id="route-option" name="route_option" value="fastest">
+                <input type="hidden" id="road-condition" name="road_condition" value="city_road">
+                <input type="hidden" id="location-type" name="location_type" value="urban">
+                <input type="hidden" id="weather-condition" name="weather" value="clear">
+
+                <!-- Interactive Delivery Distance Configuration -->
+                <div class="form-group" style="margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label class="form-label" style="margin: 0; font-weight: 700;">📍 Warehouse to Buyer Distance</label>
+                        <span style="background: rgba(16, 185, 129, 0.1); color: #10b981; font-weight: 800; padding: 2px 8px; border-radius: 20px; font-size: 12px;"><span id="buyer-distance-val">15</span> km</span>
+                    </div>
+                    <input type="range" class="form-control-range" id="buyer-distance-slider" min="1" max="100" value="15" style="width: 100%; accent-color: var(--primary); height: 6px; border-radius: 3px; cursor: pointer; margin-bottom: 12px;">
+                    <input type="hidden" id="delivery-distance" name="distance_km" value="15">
+                </div>
+
+                <!-- Visual Route Pipeline Stepper -->
+                <div style="background: white; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-sm);">
+                    <h4 style="font-size: 13.5px; font-weight: 700; margin: 0 0 16px 0; color: var(--secondary); display: flex; align-items: center; gap: 6px;">
+                        <i class="ph-duotone ph-map-pin-line" style="font-size: 18px; color: var(--primary);"></i> Logistics Pipeline Stepper
+                    </h4>
+                    
+                    <div style="display: flex; align-items: center; justify-content: space-between; position: relative; padding: 10px 0;">
+                        <!-- Horizontal Line connector -->
+                        <div style="position: absolute; top: 26px; left: 10%; right: 10%; height: 3px; background: #e2e8f0; z-index: 1;"></div>
+                        <!-- Active Progress Line -->
+                        <div id="pipeline-progress-bar" style="position: absolute; top: 26px; left: 10%; width: 100%; height: 3px; background: linear-gradient(to right, #10b981, #3b82f6); z-index: 2; transition: width 0.3s ease;"></div>
+                        
+                        <!-- Node 1: Grower Farm -->
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 22%; text-align: center;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); font-weight: bold;">🌾</div>
+                            <span style="font-weight: 700; font-size: 10.5px; margin-top: 8px; color: var(--dark); display: block;">Farm Origin</span>
+                        </div>
+
+                        <!-- Node 2: Collection Hub -->
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 26%; text-align: center;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #f59e0b; color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 0 8px rgba(245, 158, 11, 0.4); font-weight: bold;">🏢</div>
+                            <span style="font-weight: 700; font-size: 10.5px; margin-top: 8px; color: var(--dark); display: block;" id="stepper-cc-name">Collection Hub</span>
+                            <span style="font-size: 9px; color: var(--text-muted); display: block; margin-top: 2px;" id="stepper-cc-dist">0.00 km</span>
+                        </div>
+
+                        <!-- Node 3: Warehouse Depot -->
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 26%; text-align: center;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #6366f1; color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 0 8px rgba(99, 102, 241, 0.4); font-weight: bold;">🏬</div>
+                            <span style="font-weight: 700; font-size: 10.5px; margin-top: 8px; color: var(--dark); display: block;" id="stepper-wh-name">Central Depot</span>
+                            <span style="font-size: 9px; color: var(--text-muted); display: block; margin-top: 2px;" id="stepper-wh-dist">0.00 km</span>
+                        </div>
+
+                        <!-- Node 4: Buyer Destination -->
+                        <div style="display: flex; flex-direction: column; align-items: center; z-index: 3; width: 22%; text-align: center;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; color: white; display: flex; align-items: center; justify-content: center; font-size: 15px; box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); font-weight: bold;">🏠</div>
+                            <span style="font-weight: 700; font-size: 10.5px; margin-top: 8px; color: var(--dark); display: block;">Your Home</span>
+                            <span style="font-size: 9px; color: var(--text-muted); display: block; margin-top: 2px;" id="stepper-buyer-dist">15.00 km</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Node Dispatch Configuration -->
+                <div class="form-group" style="margin-top: 10px;">
+                    <div style="background: rgba(15, 23, 42, 0.03); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; font-size: 12.5px; display: flex; flex-direction: column; gap: 8px; line-height: 1.4;">
+                        <div>
+                            <label style="font-weight: 700; display: block; margin-bottom: 3px; color: var(--text-main);">🏢 Collection Center (Pickup Hub):</label>
+                            <select class="form-control" id="cc-routing-select" name="collection_center_id" style="padding: 4px 8px; font-size: 12.5px; height: auto; background: white; border: 1px solid var(--border); border-radius: 4px; font-weight: 600; width: 100%;" required>
+                                <?php echo $cc_options; ?>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-weight: 700; display: block; margin-bottom: 3px; color: var(--text-main);">🏬 Dispatch Warehouse (Regional Depot):</label>
+                            <select class="form-control" id="wh-routing-select" name="warehouse_id" style="padding: 4px 8px; font-size: 12.5px; height: auto; background: white; border: 1px solid var(--border); border-radius: 4px; font-weight: 600; width: 100%;" required>
+                                <?php echo $wh_options; ?>
+                            </select>
+                        </div>
+                        <div style="border-top: 1px dashed var(--border); padding-top: 6px; margin-top: 2px; display: flex; justify-content: space-between; font-weight: 600;">
+                            <span>Total Route Distance:</span>
+                            <span style="color: var(--secondary); font-weight: 800;"><span id="display-distance">15.00</span> km</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Delivery & Order Cost Breakdown -->
+                <div style="background: var(--light-bg); border-radius: var(--radius-sm); padding: 16px; margin-top: 20px; border: 1px solid var(--border); font-size: 13.5px; line-height: 1.5;">
+                    <h4 style="font-size: 14px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; color: var(--secondary);">
+                        <i class="ph-duotone ph-receipt" style="font-size: 18px;"></i> Delivery Cost Breakdown
+                    </h4>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Crop Value:</span>
+                        <span style="font-weight: 700; color: var(--dark);">₹<span id="breakdown-crop-val">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Base Delivery Fee:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-base-fee">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Distance Charge:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-distance-fee">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Weight Surcharge:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-weight-fee">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Vehicle Adjuster:</span>
+                        <span style="font-weight: 600; color: var(--dark);">x<span id="breakdown-vehicle-mult">1.00</span> (<span id="breakdown-vehicle-name">bike</span>)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Fuel Surcharge Adjustment:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-fuel-fee">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Road Condition Surcharge:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-road-fee">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Delivery Zone Surcharge:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-zone-fee">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Seasonal / Weather surcharge:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-seasonal-fee">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="color: var(--text-muted);">Tolls & Packaging Fees:</span>
+                        <span style="font-weight: 600; color: var(--dark);">₹<span id="breakdown-tolls-pkg">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
+                        <span style="color: var(--text-muted);">Carbon Footprint Index:</span>
+                        <span style="font-weight: 700; color: #10b981;"><span id="breakdown-carbon">0.00</span> kg CO2e</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 8px; font-weight: 700;">
+                        <span style="color: var(--text-main);">Raw Calculated Delivery:</span>
+                        <span style="color: var(--dark);">₹<span id="breakdown-raw-delivery">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 6px; font-weight: 700;">
+                        <span style="color: var(--text-main);">Final Delivery Fee:</span>
+                        <span style="color: var(--primary-hover);">₹<span id="breakdown-final-delivery">0</span></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 6px; font-weight: 600; font-size:12px; color: var(--secondary);">
+                        <span>Estimated Delivery Window:</span>
+                        <span>🚀 <span id="breakdown-eta">Pending</span></span>
+                    </div>
+                    <div id="min-fee-badge" style="display: none; font-size: 11px; color: var(--warning); font-weight: 700; margin-top: 4px;">
+                        ⚠️ Minimum Delivery Fee Enforced
+                    </div>
+                    <div id="free-delivery-badge" style="display: none; background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 4px 8px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; margin-top: 8px; text-align: center;">
+                        🎉 Free Delivery Threshold Met!
+                    </div>
+                </div>
+
                 <!-- Dynamic Cost Calculation (Handled instantly in app.js!) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 18px; margin-top: 24px; margin-bottom: 24px;">
                     <div>
