@@ -13,6 +13,8 @@ if (file_exists(__DIR__ . '/db_config.php')) {
     include __DIR__ . '/db_config.php';
 }
 
+$primary_error = "";
+
 if ($port !== null) {
     $conn = @mysqli_connect($host, $user, $pass, $db, $port);
 } else {
@@ -25,8 +27,14 @@ if ($port !== null) {
     }
 }
 
-// Robust fallback: if configured connection fails and it wasn't already local, try local XAMPP ports
-if (!$conn && $host !== '127.0.0.1' && $host !== 'localhost') {
+if (!$conn) {
+    $primary_error = mysqli_connect_error();
+}
+
+// Robust fallback: only try local XAMPP ports if DB_HOST was not explicitly configured in environment variables
+$is_env_configured = (getenv('DB_HOST') !== false);
+
+if (!$conn && !$is_env_configured && $host !== '127.0.0.1' && $host !== 'localhost') {
     $conn = @mysqli_connect('127.0.0.1', 'root', '', $db, 3307);
     if (!$conn) {
         $conn = @mysqli_connect('127.0.0.1', 'root', '', $db, 3306);
@@ -40,7 +48,8 @@ if (!$conn && $host !== '127.0.0.1' && $host !== 'localhost') {
 }
 
 if (!$conn) {
-    die("Database connection failed: " . mysqli_connect_error());
+    $error_msg = !empty($primary_error) ? $primary_error : mysqli_connect_error();
+    die("Database connection failed: " . $error_msg);
 }
 
 
